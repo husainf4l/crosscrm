@@ -1,0 +1,60 @@
+<nav id="sidebar" class="sidebar">
+    <div class="position-sticky pt-3">
+        <button class="btn btn-sm btn-outline-light d-md-none mb-3 ms-3" onclick="toggleSidebar()" id="close-sidebar" style="display: none;">
+            <i class="bi bi-x-lg"></i> Close
+        </button>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if request.url.path == '/' %}active{% endif %}" href="/">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/contacts' in request.url.path %}active{% endif %}" href="/contacts">
+                    <i class="bi bi-people"></i> Contacts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/companies' in request.url.path %}active{% endif %}" href="/companies">
+                    <i class="bi bi-building"></i> Companies
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/deals' in request.url.path %}active{% endif %}" href="/deals">
+                    <i class="bi bi-briefcase"></i> Deals
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/deals/pipeline' in request.url.path %}active{% endif %}" href="/deals/pipeline">
+                    <i class="bi bi-diagram-3"></i> Pipeline
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/activities' in request.url.path %}active{% endif %}" href="/activities">
+                    <i class="bi bi-calendar-event"></i> Activities
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/tasks' in request.url.path %}active{% endif %}" href="/tasks">
+                    <i class="bi bi-check-square"></i> Tasks
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/salespeople' in request.url.path %}active{% endif %}" href="/salespeople">
+                    <i class="bi bi-person-badge"></i> Salespeople
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/analytics' in request.url.path %}active{% endif %}" href="/analytics/dashboard">
+                    <i class="bi bi-graph-up"></i> Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if '/market' in request.url.path %}active{% endif %}" href="/market/insights">
+                    <i class="bi bi-globe"></i> Market Intelligence
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+

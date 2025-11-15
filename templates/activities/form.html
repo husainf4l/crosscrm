@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}New Activity - Cross CRM{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>New Activity</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/activities">
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type *</label>
+                        <select class="form-select" id="type" name="type" required>
+                            {% for type in types %}
+                                <option value="{{ type.value }}">{{ type.value.title() }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject *</label>
+                        <input type="text" class="form-control" id="subject" name="subject" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="outcome" class="form-label">Outcome</label>
+                        <input type="text" class="form-control" id="outcome" name="outcome">
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_id" class="form-label">Contact</label>
+                            <select class="form-select" id="contact_id" name="contact_id">
+                                <option value="">Select Contact</option>
+                                {% for contact in contacts %}
+                                    <option value="{{ contact.id }}" {% if contact_id == contact.id %}selected{% endif %}>
+                                        {{ contact.first_name }} {{ contact.last_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="deal_id" class="form-label">Deal</label>
+                            <select class="form-select" id="deal_id" name="deal_id">
+                                <option value="">Select Deal</option>
+                                {% for deal in deals %}
+                                    <option value="{{ deal.id }}" {% if deal_id == deal.id %}selected{% endif %}>
+                                        {{ deal.title }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="/activities" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Create Activity</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

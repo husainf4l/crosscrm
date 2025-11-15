@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}New Deal - Cross CRM{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>New Deal</h4>
+            </div>
+            <div class="card-body">
+                {% if templates %}
+                <div class="mb-3">
+                    <label class="form-label">Use Template (optional):</label>
+                    <select class="form-select" id="template-select" onchange="window.location.href='/deals/new?template=' + this.value">
+                        <option value="">Select a template...</option>
+                        {% for key, template in templates.items() %}
+                            <option value="{{ key }}" {% if selected_template == key %}selected{% endif %}>
+                                {{ template.title }} - ${{ "{:,.2f}".format(template.value) }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                
+                <form method="post" action="/deals">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title *</label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               value="{% if template_data %}{{ template_data.title }}{% endif %}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3">{% if template_data %}{{ template_data.description }}{% endif %}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="value" class="form-label">Value *</label>
+                            <input type="number" step="0.01" class="form-control" id="value" name="value" 
+                                   value="{% if template_data %}{{ template_data.value }}{% endif %}" required>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="currency" class="form-label">Currency</label>
+                            <input type="text" class="form-control" id="currency" name="currency" value="USD">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="probability" class="form-label">Probability (%)</label>
+                            <input type="number" min="0" max="100" class="form-control" id="probability" name="probability" 
+                                   value="{% if template_data %}{{ template_data.probability }}{% else %}0{% endif %}">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="stage" class="form-label">Stage</label>
+                        <select class="form-select" id="stage" name="stage" required>
+                            {% for stage in stages %}
+                                <option value="{{ stage.value }}" 
+                                        {% if template_data and template_data.stage.value == stage.value %}selected{% endif %}>
+                                    {{ stage.value.replace('_', ' ').title() }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_id" class="form-label">Contact</label>
+                            <select class="form-select" id="contact_id" name="contact_id">
+                                <option value="">Select Contact</option>
+                                {% for contact in contacts %}
+                                    <option value="{{ contact.id }}">{{ contact.first_name }} {{ contact.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="company_id" class="form-label">Company</label>
+                            <select class="form-select" id="company_id" name="company_id">
+                                <option value="">Select Company</option>
+                                {% for company in companies %}
+                                    <option value="{{ company.id }}">{{ company.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="assigned_to" class="form-label">Assigned To</label>
+                        <select class="form-select" id="assigned_to" name="assigned_to">
+                            <option value="">Unassigned</option>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="/deals" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Create Deal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
