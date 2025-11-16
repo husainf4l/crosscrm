@@ -10,5 +10,35 @@ public class UserDto
     public DateTime CreatedAt { get; set; }
     public int? CompanyId { get; set; }
     public string? CompanyName { get; set; }
+    public int? ManagerId { get; set; }
+    public UserBasicDto? Manager { get; set; }
+    public List<UserBasicDto> DirectReports { get; set; } = new List<UserBasicDto>();
     public List<UserCompanyDto> Companies { get; set; } = new List<UserCompanyDto>();
+    public List<TeamMembershipDto> Teams { get; set; } = new List<TeamMembershipDto>();
+    public List<UserRoleAssignmentDto> Roles { get; set; } = new List<UserRoleAssignmentDto>();
+}
+
+public class UserBasicDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string? Avatar { get; set; }
+}
+
+public class TeamMembershipDto
+{
+    public int TeamId { get; set; }
+    public string TeamName { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public DateTime JoinedAt { get; set; }
+}
+
+public class UserRoleAssignmentDto
+{
+    public int RoleId { get; set; }
+    public string RoleName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public DateTime AssignedAt { get; set; }
 }

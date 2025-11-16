@@ -18,4 +18,8 @@ public class CreateCustomerDto
     public string? Industry { get; set; }
     public string? Website { get; set; }
     public string? Priority { get; set; } = "medium";
+    
+    // Sales Assignment
+    public int? AssignedToTeamId { get; set; }
+    public int? AssignedToUserId { get; set; }
 }

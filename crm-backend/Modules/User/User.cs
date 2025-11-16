@@ -25,6 +25,11 @@ public class User
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // Sales Hierarchy
+    public int? ManagerId { get; set; }
+    public User? Manager { get; set; }
+    public ICollection<User> DirectReports { get; set; } = new List<User>();
+
     // Foreign key for active company
     public int? CompanyId { get; set; }
 
@@ -33,4 +38,10 @@ public class User
 
     // Many-to-many relationship with companies
     public ICollection<crm_backend.Modules.User.UserCompany> UserCompanies { get; set; } = new List<crm_backend.Modules.User.UserCompany>();
+
+    // Team memberships
+    public ICollection<crm_backend.Modules.Collaboration.TeamMember> TeamMemberships { get; set; } = new List<crm_backend.Modules.Collaboration.TeamMember>();
+
+    // User roles
+    public ICollection<crm_backend.Modules.Collaboration.UserRole> UserRoles { get; set; } = new List<crm_backend.Modules.Collaboration.UserRole>();
 }

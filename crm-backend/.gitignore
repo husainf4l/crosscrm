@@ -33,6 +33,7 @@ logs/
 *.sqlite3
 
 # Secrets and sensitive files
+appsettings.json
 appsettings.*.json
 secrets.json
 

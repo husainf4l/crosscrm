@@ -23,6 +23,9 @@ Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add environment variables to configuration
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -102,10 +105,11 @@ builder.Services.AddGraphQLServer()
     .AddProjections();
 builder.Services.AddDbContext<CrmDbContext>(options => {
     var host = Environment.GetEnvironmentVariable("DB_HOST");
-    var username = Environment.GetEnvironmentVariable("DB_USERNAME");
+    var username = Environment.GetEnvironmentVariable("DB_USER");
     var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
-    var database = Environment.GetEnvironmentVariable("DB_DATABASE");
-    var connectionString = $"Host={host};Username={username};Password={password};Database={database}";
+    var database = Environment.GetEnvironmentVariable("DB_NAME");
+    var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+    var connectionString = $"Host={host};Port={port};Username={username};Password={password};Database={database}";
     options.UseNpgsql(connectionString);
 });
 

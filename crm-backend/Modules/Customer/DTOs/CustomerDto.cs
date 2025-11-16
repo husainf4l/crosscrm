@@ -24,10 +24,29 @@ public class CustomerDto
     public string? Website { get; set; }
     public string? Priority { get; set; }
 
+    // Sales Assignment
+    public int? AssignedToTeamId { get; set; }
+    public CustomerTeamDto? AssignedTeam { get; set; }
+    public int? AssignedToUserId { get; set; }
+    public CustomerUserDto? AssignedToUser { get; set; }
+
     // Category information
     public List<CustomerCategoryDto> Categories { get; set; } = new List<CustomerCategoryDto>();
 
     // Activity summary
     public int TotalActivities { get; set; }
     public DateTime? LastActivity { get; set; }
+}
+
+public class CustomerTeamDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+
+public class CustomerUserDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }

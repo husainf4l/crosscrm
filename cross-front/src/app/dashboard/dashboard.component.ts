@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, NavigationEnd } from '@angular/router';
 import { SidebarComponent } from '../components/layouts/sidebar/sidebar.component';
 import { AuthService } from '../services/auth.service';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, SidebarComponent],
+  imports: [CommonModule, SidebarComponent, RouterOutlet, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -18,6 +19,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentUser: any = null;
   userAvatar = 'https://via.placeholder.com/32';
   isUserMenuOpen = false;
+  hasChildRoute = false;
+  pageTitle = 'Dashboard';
+  isCustomersPage = false;
   private subscriptions = new Subscription();
   
   stats = {
@@ -41,6 +45,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {
     // Test the provided JWT token
     this.testJWTToken();
+    
+    // Check if we're on a child route
+    this.checkChildRoute();
   }
 
   ngOnInit() {
@@ -59,10 +66,36 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       })
     );
+
+    // Listen to route changes to check for child routes
+    this.subscriptions.add(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => {
+          this.checkChildRoute();
+        })
+    );
   }
 
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
+  }
+
+  private checkChildRoute(): void {
+    const url = this.router.url;
+    this.hasChildRoute = url !== '/dashboard' && url.startsWith('/');
+    
+    // Update page title based on route
+    if (url.startsWith('/customers')) {
+      this.pageTitle = 'Customers';
+      this.isCustomersPage = url === '/customers' || url.startsWith('/customers?');
+    } else if (url === '/dashboard') {
+      this.pageTitle = 'Dashboard';
+      this.isCustomersPage = false;
+    } else {
+      this.pageTitle = 'Dashboard';
+      this.isCustomersPage = false;
+    }
   }
 
   @HostListener('document:click', ['$event'])
@@ -108,7 +141,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhbC1odXNzZWluQHBhcGF5YXRyYWRpbmcuY29tIiwibmFtZSI6ImFsLWh1c3NlaW4iLCJjb21wYW55SWQiOiI2IiwiZXhwIjoxNzYzMzM2Mzg2LCJpc3MiOiJjcm0tYmFja2VuZCIsImF1ZCI6ImNybS1jbGllbnQifQ.rj1dDFXtA7jnXa4cWkeF0LiZSdL6Cpjf1lsCyFn3Ats';
     
     console.log('='.repeat(60));
-    console.log('� TESTING NEW JWT TOKEN WITH COMPANY ID');
+    console.log('🔐 TESTING NEW JWT TOKEN WITH COMPANY ID');
     console.log('='.repeat(60));
     
     (this.authService as any).testToken(testToken);

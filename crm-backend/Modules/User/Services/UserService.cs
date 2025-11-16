@@ -46,8 +46,14 @@ public class UserService : IUserService
     {
         var user = await _context.Users
             .Include(u => u.Company)
+            .Include(u => u.Manager)
+            .Include(u => u.DirectReports)
             .Include(u => u.UserCompanies)
                 .ThenInclude(uc => uc.Company)
+            .Include(u => u.TeamMemberships)
+                .ThenInclude(tm => tm.Team)
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.Id == id);
         if (user == null) return null;
 
@@ -61,12 +67,42 @@ public class UserService : IUserService
             CreatedAt = user.CreatedAt,
             CompanyId = user.CompanyId,
             CompanyName = user.Company?.Name ?? string.Empty,
+            ManagerId = user.ManagerId,
+            Manager = user.Manager != null ? new UserBasicDto
+            {
+                Id = user.Manager.Id,
+                Name = user.Manager.Name,
+                Email = user.Manager.Email,
+                Avatar = user.Manager.Avatar
+            } : null,
+            DirectReports = user.DirectReports.Select(dr => new UserBasicDto
+            {
+                Id = dr.Id,
+                Name = dr.Name,
+                Email = dr.Email,
+                Avatar = dr.Avatar
+            }).ToList(),
             Companies = user.UserCompanies.Select(uc => new UserCompanyDto
             {
                 CompanyId = uc.CompanyId,
                 CompanyName = uc.Company?.Name ?? "Unknown Company",
                 IsActive = uc.IsActive,
                 JoinedAt = uc.JoinedAt
+            }).ToList(),
+            Teams = user.TeamMemberships.Select(tm => new TeamMembershipDto
+            {
+                TeamId = tm.TeamId,
+                TeamName = tm.Team?.Name ?? "Unknown Team",
+                Role = tm.Role.ToString(),
+                IsActive = tm.IsActive,
+                JoinedAt = tm.JoinedAt
+            }).ToList(),
+            Roles = user.UserRoles.Select(ur => new UserRoleAssignmentDto
+            {
+                RoleId = ur.RoleId,
+                RoleName = ur.Role?.Name ?? "Unknown Role",
+                IsActive = ur.IsActive,
+                AssignedAt = ur.AssignedAt
             }).ToList()
         };
     }
@@ -148,13 +184,18 @@ public class UserService : IUserService
         user.Email = dto.Email;
         user.Phone = dto.Phone;
         user.Avatar = dto.Avatar;
+        user.ManagerId = dto.ManagerId;
         user.CompanyId = dto.CompanyId;
 
         await _context.SaveChangesAsync();
 
-        // Load company
+        // Load related data
         await _context.Entry(user).Reference(u => u.Company).LoadAsync();
+        await _context.Entry(user).Reference(u => u.Manager).LoadAsync();
+        await _context.Entry(user).Collection(u => u.DirectReports).LoadAsync();
         await _context.Entry(user).Collection(u => u.UserCompanies).Query().Include(uc => uc.Company).LoadAsync();
+        await _context.Entry(user).Collection(u => u.TeamMemberships).Query().Include(tm => tm.Team).LoadAsync();
+        await _context.Entry(user).Collection(u => u.UserRoles).Query().Include(ur => ur.Role).LoadAsync();
 
         return new UserDto
         {
@@ -166,12 +207,42 @@ public class UserService : IUserService
             CreatedAt = user.CreatedAt,
             CompanyId = user.CompanyId,
             CompanyName = user.Company?.Name ?? string.Empty,
+            ManagerId = user.ManagerId,
+            Manager = user.Manager != null ? new UserBasicDto
+            {
+                Id = user.Manager.Id,
+                Name = user.Manager.Name,
+                Email = user.Manager.Email,
+                Avatar = user.Manager.Avatar
+            } : null,
+            DirectReports = user.DirectReports.Select(dr => new UserBasicDto
+            {
+                Id = dr.Id,
+                Name = dr.Name,
+                Email = dr.Email,
+                Avatar = dr.Avatar
+            }).ToList(),
             Companies = user.UserCompanies.Select(uc => new UserCompanyDto
             {
                 CompanyId = uc.CompanyId,
                 CompanyName = uc.Company != null ? uc.Company.Name! : "Unknown Company",
                 IsActive = uc.IsActive,
                 JoinedAt = uc.JoinedAt
+            }).ToList(),
+            Teams = user.TeamMemberships.Select(tm => new TeamMembershipDto
+            {
+                TeamId = tm.TeamId,
+                TeamName = tm.Team?.Name ?? "Unknown Team",
+                Role = tm.Role.ToString(),
+                IsActive = tm.IsActive,
+                JoinedAt = tm.JoinedAt
+            }).ToList(),
+            Roles = user.UserRoles.Select(ur => new UserRoleAssignmentDto
+            {
+                RoleId = ur.RoleId,
+                RoleName = ur.Role?.Name ?? "Unknown Role",
+                IsActive = ur.IsActive,
+                AssignedAt = ur.AssignedAt
             }).ToList()
         };
     }

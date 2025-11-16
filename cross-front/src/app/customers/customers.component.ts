@@ -29,6 +29,11 @@ export class CustomersComponent implements OnInit, OnDestroy {
   selectedPriorities: string[] = [];
   selectedIndustries: string[] = [];
 
+  // Single-select dropdown filters
+  selectedTypeFilter = '';
+  selectedStatusFilter = '';
+  selectedPriorityFilter = '';
+
   // Filter options
   customerTypes = [
     { value: 'lead', label: 'Lead (Initial Contact)', color: 'bg-blue-100 text-blue-800' },
@@ -63,15 +68,6 @@ export class CustomersComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // Test backend connection with single efficient request
-    try {
-      console.log('🚀 Testing backend connection...');
-      await this.customerService.testBackendConnection();
-      console.log('✅ Backend connection test completed!');
-    } catch (error) {
-      console.error('❌ Backend connection failed:', error);
-    }
-
     // Load customers
     this.loadCustomers();
 
@@ -135,6 +131,21 @@ export class CustomersComponent implements OnInit, OnDestroy {
     }, 300);
   }
 
+  onTypeFilterChange() {
+    this.selectedCustomerTypes = this.selectedTypeFilter ? [this.selectedTypeFilter] : [];
+    this.loadCustomers();
+  }
+
+  onStatusFilterChange() {
+    this.selectedStatuses = this.selectedStatusFilter ? [this.selectedStatusFilter] : [];
+    this.loadCustomers();
+  }
+
+  onPriorityFilterChange() {
+    this.selectedPriorities = this.selectedPriorityFilter ? [this.selectedPriorityFilter] : [];
+    this.loadCustomers();
+  }
+
   toggleFilter(filterArray: string[], value: string) {
     const index = filterArray.indexOf(value);
     if (index > -1) {
@@ -165,6 +176,9 @@ export class CustomersComponent implements OnInit, OnDestroy {
     this.selectedStatuses = [];
     this.selectedPriorities = [];
     this.selectedIndustries = [];
+    this.selectedTypeFilter = '';
+    this.selectedStatusFilter = '';
+    this.selectedPriorityFilter = '';
     this.searchTerm = '';
     this.loadCustomers();
   }

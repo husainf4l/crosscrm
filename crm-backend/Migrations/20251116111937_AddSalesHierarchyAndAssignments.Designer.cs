@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using crm_backend.Data;
@@ -12,9 +13,11 @@ using crm_backend.Data;
 namespace crm_backend.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    partial class CrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251116111937_AddSalesHierarchyAndAssignments")]
+    partial class AddSalesHierarchyAndAssignments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4324,7 +4327,7 @@ namespace crm_backend.Migrations
                         .IsRequired();
 
                     b.HasOne("crm_backend.Modules.User.User", "User")
-                        .WithMany("TeamMemberships")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -4354,7 +4357,7 @@ namespace crm_backend.Migrations
                         .IsRequired();
 
                     b.HasOne("crm_backend.Modules.User.User", "User")
-                        .WithMany("UserRoles")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -5729,11 +5732,7 @@ namespace crm_backend.Migrations
                 {
                     b.Navigation("DirectReports");
 
-                    b.Navigation("TeamMemberships");
-
                     b.Navigation("UserCompanies");
-
-                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }
