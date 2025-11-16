@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Modern CRM Agent Chat Interface - AI-powered sales assistant">
+    <meta name="theme-color" content="#6366f1">
+    <title>CRM Agent - Modern Chat Interface</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header -->
+        <header class="chat-header">
+            <div class="header-content">
+                <h1>
+                    <span aria-hidden="true">🤖</span>
+                    <span>CRM Agent</span>
+                </h1>
+                <div class="header-controls">
+                    <label for="userIdInput" class="sr-only">User ID</label>
+                    <input 
+                        type="number" 
+                        id="userIdInput" 
+                        class="user-id-input" 
+                        placeholder="User ID" 
+                        value="1" 
+                        min="1"
+                        aria-label="User ID"
+                    >
+                    <button id="loadHistoryBtn" class="btn-secondary" aria-label="Load chat history" title="Load chat history">
+                        <span aria-hidden="true">📜</span>
+                        <span>History</span>
+                    </button>
+                    <button id="clearChatBtn" class="btn-secondary" aria-label="Clear chat" title="Clear chat">
+                        <span aria-hidden="true">🗑️</span>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Chat Messages Area -->
+        <main class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Chat messages">
+            <div class="welcome-message">
+                <p>
+                    <span aria-hidden="true">👋</span>
+                    <span>Welcome to CRM Agent Chat!</span>
+                </p>
+                <p>Start a conversation by typing a message below or use the quick actions.</p>
+            </div>
+        </main>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions" id="quickActions" aria-label="Quick action buttons">
+            <button class="quick-action-btn" data-agent="REMINDER" aria-label="Send reminder message" title="Send morning reminder">
+                <span aria-hidden="true">🌅</span>
+                <span>Reminder</span>
+            </button>
+            <button class="quick-action-btn" data-agent="FOLLOW_UP" aria-label="Send follow-up message" title="Follow up on tasks">
+                <span aria-hidden="true">📞</span>
+                <span>Follow-up</span>
+            </button>
+            <button class="quick-action-btn" data-agent="CLOSURE" aria-label="Send closure message" title="Push for deal closure">
+                <span aria-hidden="true">✅</span>
+                <span>Closure</span>
+            </button>
+            <button class="quick-action-btn" data-agent="NURTURE" aria-label="Send nurture message" title="Nurture leads">
+                <span aria-hidden="true">💚</span>
+                <span>Nurture</span>
+            </button>
+            <button class="quick-action-btn" data-agent="UPSELL" aria-label="Send upsell message" title="Suggest upsells">
+                <span aria-hidden="true">📈</span>
+                <span>Upsell</span>
+            </button>
+        </div>
+
+        <!-- Input Area -->
+        <footer class="chat-input-area">
+            <form id="chatForm" class="chat-form" aria-label="Chat input form">
+                <div class="input-wrapper">
+                    <label for="messageInput" class="sr-only">Type your message</label>
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="Type your message here..." 
+                        rows="1"
+                        aria-label="Message input"
+                        aria-required="true"
+                        autocomplete="off"
+                        spellcheck="true"
+                    ></textarea>
+                    <button 
+                        type="submit" 
+                        id="sendBtn" 
+                        class="send-button" 
+                        aria-label="Send message"
+                        disabled
+                        title="Send message (Enter)"
+                    >
+                        <span class="send-icon" aria-hidden="true">📤</span>
+                        <span class="loading-spinner" style="display: none;" aria-hidden="true">⏳</span>
+                        <span class="sr-only">Send</span>
+                    </button>
+                </div>
+                <div class="error-message" id="errorMessage" role="alert" aria-live="assertive"></div>
+            </form>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+

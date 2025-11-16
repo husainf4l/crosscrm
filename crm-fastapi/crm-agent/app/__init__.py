@@ -1,0 +1,2 @@
+"""CRM Agent FastAPI application."""
+

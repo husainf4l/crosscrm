@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface Test Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+        .test-item {
+            padding: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2563eb;
+            background: #f8fafc;
+        }
+        .test-item h3 {
+            margin: 0 0 10px 0;
+            color: #1e293b;
+        }
+        .test-item p {
+            margin: 5px 0;
+            color: #64748b;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.pass {
+            background: #10b981;
+            color: white;
+        }
+        .status.fail {
+            background: #ef4444;
+            color: white;
+        }
+        .status.pending {
+            background: #f59e0b;
+            color: white;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 CRM Agent Chat Interface - Test Suite</h1>
+
+    <div class="test-section">
+        <h2>📋 Manual Testing Checklist</h2>
+        
+        <div class="test-item">
+            <h3>1. Interface Loading</h3>
+            <p><strong>Test:</strong> Open the chat interface at <code>/chat</code></p>
+            <p><strong>Expected:</strong> Chat interface loads with header, message area, input field, and quick action buttons</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+
+        <div class="test-item">
+            <h3>2. Send Message</h3>
+            <p><strong>Test:</strong> Type a message and click send or press Enter</p>
+            <p><strong>Expected:</strong> Message appears in chat, loading indicator shows, agent responds</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+
+        <div class="test-item">
+            <h3>3. Quick Actions</h3>
+            <p><strong>Test:</strong> Click any quick action button (Reminder, Follow-up, etc.)</p>
+            <p><strong>Expected:</strong> Agent generates and displays message for that agent type</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+
+        <div class="test-item">
+            <h3>4. Chat History</h3>
+            <p><strong>Test:</strong> Click "History" button</p>
+            <p><strong>Expected:</strong> Previous messages load from database</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+
+        <div class="test-item">
+            <h3>5. User ID Change</h3>
+            <p><strong>Test:</strong> Change user ID in header and send a message</p>
+            <p><strong>Expected:</strong> Messages are associated with the new user ID</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+
+        <div class="test-item">
+            <h3>6. Error Handling</h3>
+            <p><strong>Test:</strong> Stop the backend server and try to send a message</p>
+            <p><strong>Expected:</strong> Error message displays in red below input field</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+
+        <div class="test-item">
+            <h3>7. Responsive Design</h3>
+            <p><strong>Test:</strong> Resize browser window to mobile size</p>
+            <p><strong>Expected:</strong> Interface adapts to smaller screens, remains usable</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+
+        <div class="test-item">
+            <h3>8. Clear Chat</h3>
+            <p><strong>Test:</strong> Click "Clear" button</p>
+            <p><strong>Expected:</strong> Chat messages are cleared, welcome message appears</p>
+            <p><strong>Status:</strong> <span class="status pending">Manual Test Required</span></p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 API Testing</h2>
+        
+        <div class="test-item">
+            <h3>Test Chat Message Endpoint</h3>
+            <p>Use the following curl command or test in browser console:</p>
+            <div class="code-block">
+curl -X POST http://localhost:8000/chat/message \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": 1, "message": "Hello, what are my tasks today?"}'
+            </div>
+            <button onclick="testChatMessage()">Test in Console</button>
+        </div>
+
+        <div class="test-item">
+            <h3>Test Agent Run Endpoint</h3>
+            <div class="code-block">
+curl -X POST http://localhost:8000/agents/run \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": 1, "agent_type": "REMINDER"}'
+            </div>
+            <button onclick="testAgentRun()">Test in Console</button>
+        </div>
+
+        <div class="test-item">
+            <h3>Test Chat History Endpoint</h3>
+            <div class="code-block">
+curl http://localhost:8000/chat/history/1?limit=10
+            </div>
+            <button onclick="testChatHistory()">Test in Console</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🌐 Live Interface Preview</h2>
+        <p>If the server is running, the interface will load below:</p>
+        <iframe src="http://localhost:8000/chat" title="Chat Interface"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Best Practices Checklist</h2>
+        <ul>
+            <li>✅ Responsive design (mobile, tablet, desktop)</li>
+            <li>✅ Accessibility (ARIA labels, keyboard navigation)</li>
+            <li>✅ Error handling (network errors, API errors)</li>
+            <li>✅ Loading states (spinners, disabled buttons)</li>
+            <li>✅ Modern UI/UX (gradients, shadows, animations)</li>
+            <li>✅ Clean code structure (ES6 classes, separation of concerns)</li>
+            <li>✅ User feedback (error messages, success states)</li>
+            <li>✅ Keyboard shortcuts (Enter to send, Shift+Enter for new line)</li>
+            <li>✅ Auto-scroll to latest message</li>
+            <li>✅ Auto-resize textarea</li>
+        </ul>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function testChatMessage() {
+            try {
+                const response = await fetch(`${API_BASE}/chat/message`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: 1,
+                        message: 'Test message from test suite'
+                    })
+                });
+                const data = await response.json();
+                console.log('✅ Chat Message Test:', data);
+                alert('Test successful! Check console for details.');
+            } catch (error) {
+                console.error('❌ Chat Message Test Failed:', error);
+                alert('Test failed! Check console for details.');
+            }
+        }
+
+        async function testAgentRun() {
+            try {
+                const response = await fetch(`${API_BASE}/agents/run`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: 1,
+                        agent_type: 'REMINDER'
+                    })
+                });
+                const data = await response.json();
+                console.log('✅ Agent Run Test:', data);
+                alert('Test successful! Check console for details.');
+            } catch (error) {
+                console.error('❌ Agent Run Test Failed:', error);
+                alert('Test failed! Check console for details.');
+            }
+        }
+
+        async function testChatHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/chat/history/1?limit=10`);
+                const data = await response.json();
+                console.log('✅ Chat History Test:', data);
+                alert('Test successful! Check console for details.');
+            } catch (error) {
+                console.error('❌ Chat History Test Failed:', error);
+                alert('Test failed! Check console for details.');
+            }
+        }
+    </script>
+</body>
+</html>
+
