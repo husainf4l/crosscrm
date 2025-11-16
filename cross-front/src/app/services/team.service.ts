@@ -423,11 +423,8 @@ export class TeamService {
         userId
         teamId
         role
-        user {
-          id
-          name
-          email
-        }
+        userName
+        userEmail
       }
     }`;
 

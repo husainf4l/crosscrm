@@ -339,11 +339,11 @@ import { TeamService, Team, User, TeamMember } from '../services/team.service';
             class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-semibold text-xs">
-                {{ getUserInitials(member.user!) }}
+                {{ getMemberInitials(member) }}
               </div>
               <div>
-                <div class="text-sm font-medium text-gray-900">{{ member.user?.name }}</div>
-                <div class="text-xs text-gray-500">{{ member.user?.email }}</div>
+                <div class="text-sm font-medium text-gray-900">{{ member.userName }}</div>
+                <div class="text-xs text-gray-500">{{ member.userEmail }}</div>
               </div>
             </div>
             <div class="flex items-center gap-2">
