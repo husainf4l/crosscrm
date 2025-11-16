@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using crm_backend.Data;
@@ -12,9 +13,11 @@ using crm_backend.Data;
 namespace crm_backend.Migrations
 {
     [DbContext(typeof(CrmDbContext))]
-    partial class CrmDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251116113443_FixTeamMemberUserRelationship")]
+    partial class FixTeamMemberUserRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3661,9 +3664,17 @@ namespace crm_backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Department")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("JobTitle")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int?>("ManagerId")
                         .HasColumnType("integer");
@@ -4354,7 +4365,7 @@ namespace crm_backend.Migrations
                         .IsRequired();
 
                     b.HasOne("crm_backend.Modules.User.User", "User")
-                        .WithMany("UserRoles")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -5732,8 +5743,6 @@ namespace crm_backend.Migrations
                     b.Navigation("TeamMemberships");
 
                     b.Navigation("UserCompanies");
-
-                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

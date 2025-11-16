@@ -25,8 +25,12 @@ public class Customer
     public int CompanyId { get; set; }
     public crm_backend.Modules.Company.Company? Company { get; set; }
     
+    // Sales Assignment
     public int? AssignedToTeamId { get; set; }
     public crm_backend.Modules.Collaboration.Team? AssignedTeam { get; set; }
+    
+    public int? AssignedToUserId { get; set; }
+    public crm_backend.Modules.User.User? AssignedToUser { get; set; }
     
     public int? ConvertedFromLeadId { get; set; }
     public crm_backend.Modules.Marketing.Lead? ConvertedFromLead { get; set; }

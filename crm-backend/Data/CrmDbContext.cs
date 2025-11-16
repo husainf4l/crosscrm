@@ -148,6 +148,13 @@ public class CrmDbContext : DbContext
             .HasForeignKey(u => u.CompanyId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        // Configure User hierarchy (Manager-DirectReports)
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Manager)
+            .WithMany(u => u.DirectReports)
+            .HasForeignKey(u => u.ManagerId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         // Configure Customer-Company relationship
         modelBuilder.Entity<Customer>()
             .HasOne(c => c.Company)
@@ -159,6 +166,12 @@ public class CrmDbContext : DbContext
             .HasOne(c => c.AssignedTeam)
             .WithMany()
             .HasForeignKey(c => c.AssignedToTeamId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Customer>()
+            .HasOne(c => c.AssignedToUser)
+            .WithMany()
+            .HasForeignKey(c => c.AssignedToUserId)
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<Customer>()
@@ -751,7 +764,7 @@ public class CrmDbContext : DbContext
 
         modelBuilder.Entity<TeamMember>()
             .HasOne(tm => tm.User)
-            .WithMany()
+            .WithMany(u => u.TeamMemberships)
             .HasForeignKey(tm => tm.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -765,7 +778,7 @@ public class CrmDbContext : DbContext
         // Configure UserRole relationships
         modelBuilder.Entity<UserRole>()
             .HasOne(ur => ur.User)
-            .WithMany()
+            .WithMany(u => u.UserRoles)
             .HasForeignKey(ur => ur.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 

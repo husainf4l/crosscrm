@@ -11,11 +11,20 @@ public class TeamDto
     public bool IsActive { get; set; }
     public int? ManagerUserId { get; set; }
     public string? ManagerName { get; set; }
+    public ManagerBasicDto? Manager { get; set; }
     public int CompanyId { get; set; }
     public string CompanyName { get; set; } = string.Empty;
     public int MemberCount { get; set; }
+    public List<TeamMemberDto>? Members { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+}
+
+public class ManagerBasicDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }
 
 public class CreateTeamDto

@@ -53,6 +53,7 @@ public class TeamService : ITeamService
             .Include(t => t.Company)
             .Include(t => t.Manager)
             .Include(t => t.Members)
+                .ThenInclude(m => m.User)
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (team == null) return null;
@@ -66,9 +67,28 @@ public class TeamService : ITeamService
             IsActive = team.IsActive,
             ManagerUserId = team.ManagerUserId,
             ManagerName = team.Manager != null ? team.Manager.Name : null,
+            Manager = team.Manager != null ? new ManagerBasicDto
+            {
+                Id = team.Manager.Id,
+                Name = team.Manager.Name,
+                Email = team.Manager.Email
+            } : null,
             CompanyId = team.CompanyId,
             CompanyName = team.Company.Name,
             MemberCount = team.Members.Count(m => m.IsActive),
+            Members = team.Members.Select(m => new TeamMemberDto
+            {
+                Id = m.Id,
+                TeamId = m.TeamId,
+                TeamName = team.Name,
+                UserId = m.UserId,
+                UserName = m.User.Name,
+                UserEmail = m.User.Email,
+                Role = m.Role,
+                IsActive = m.IsActive,
+                JoinedAt = m.JoinedAt,
+                LeftAt = m.LeftAt
+            }).ToList(),
             CreatedAt = team.CreatedAt,
             UpdatedAt = team.UpdatedAt
         };

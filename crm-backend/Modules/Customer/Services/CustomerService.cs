@@ -205,6 +205,8 @@ public class CustomerService : ICustomerService
     {
         var customer = await _context.Customers
             .Include(c => c.Company)
+            .Include(c => c.AssignedTeam)
+            .Include(c => c.AssignedToUser)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (customer == null) return null;
@@ -220,8 +222,27 @@ public class CustomerService : ICustomerService
             Country = customer.Country,
             Latitude = customer.Latitude,
             Longitude = customer.Longitude,
+            ContactPersonName = customer.ContactPersonName,
+            CustomerType = customer.CustomerType,
+            Industry = customer.Industry,
+            Website = customer.Website,
+            Priority = customer.Priority,
+            Status = customer.Status,
             CompanyId = customer.CompanyId,
             CompanyName = customer.Company != null ? customer.Company.Name : string.Empty,
+            AssignedToTeamId = customer.AssignedToTeamId,
+            AssignedTeam = customer.AssignedTeam != null ? new CustomerTeamDto
+            {
+                Id = customer.AssignedTeam.Id,
+                Name = customer.AssignedTeam.Name
+            } : null,
+            AssignedToUserId = customer.AssignedToUserId,
+            AssignedToUser = customer.AssignedToUser != null ? new CustomerUserDto
+            {
+                Id = customer.AssignedToUser.Id,
+                Name = customer.AssignedToUser.Name,
+                Email = customer.AssignedToUser.Email
+            } : null,
             CreatedAt = customer.CreatedAt,
             UpdatedAt = customer.UpdatedAt
         };
@@ -247,6 +268,13 @@ public class CustomerService : ICustomerService
             Country = dto.Country,
             Latitude = dto.Latitude,
             Longitude = dto.Longitude,
+            ContactPersonName = dto.ContactPersonName,
+            CustomerType = dto.CustomerType,
+            Industry = dto.Industry,
+            Website = dto.Website,
+            Priority = dto.Priority,
+            AssignedToTeamId = dto.AssignedToTeamId,
+            AssignedToUserId = dto.AssignedToUserId,
             CompanyId = companyId,
             CreatedAt = DateTime.UtcNow
         };
@@ -254,8 +282,12 @@ public class CustomerService : ICustomerService
         _context.Customers.Add(customer);
         await _context.SaveChangesAsync();
 
-        // Load company for response
+        // Load relationships for response
         await _context.Entry(customer).Reference(c => c.Company).LoadAsync();
+        if (customer.AssignedToTeamId.HasValue)
+            await _context.Entry(customer).Reference(c => c.AssignedTeam).LoadAsync();
+        if (customer.AssignedToUserId.HasValue)
+            await _context.Entry(customer).Reference(c => c.AssignedToUser).LoadAsync();
 
         return new CustomerDto
         {
@@ -268,6 +300,25 @@ public class CustomerService : ICustomerService
             Country = customer.Country,
             Latitude = customer.Latitude,
             Longitude = customer.Longitude,
+            ContactPersonName = customer.ContactPersonName,
+            CustomerType = customer.CustomerType,
+            Industry = customer.Industry,
+            Website = customer.Website,
+            Priority = customer.Priority,
+            Status = customer.Status,
+            AssignedToTeamId = customer.AssignedToTeamId,
+            AssignedTeam = customer.AssignedTeam != null ? new CustomerTeamDto
+            {
+                Id = customer.AssignedTeam.Id,
+                Name = customer.AssignedTeam.Name
+            } : null,
+            AssignedToUserId = customer.AssignedToUserId,
+            AssignedToUser = customer.AssignedToUser != null ? new CustomerUserDto
+            {
+                Id = customer.AssignedToUser.Id,
+                Name = customer.AssignedToUser.Name,
+                Email = customer.AssignedToUser.Email
+            } : null,
             CompanyId = customer.CompanyId,
             CompanyName = customer.Company != null ? customer.Company.Name : string.Empty,
             CreatedAt = customer.CreatedAt,
@@ -279,6 +330,8 @@ public class CustomerService : ICustomerService
     {
         var customer = await _context.Customers
             .Include(c => c.Company)
+            .Include(c => c.AssignedTeam)
+            .Include(c => c.AssignedToUser)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (customer == null) return null;
@@ -329,6 +382,45 @@ public class CustomerService : ICustomerService
             customer.Status = dto.Status;
         }
 
+        if (dto.ContactPersonName != null)
+        {
+            customer.ContactPersonName = dto.ContactPersonName;
+        }
+
+        if (dto.CustomerType != null)
+        {
+            customer.CustomerType = dto.CustomerType;
+        }
+
+        if (dto.Industry != null)
+        {
+            customer.Industry = dto.Industry;
+        }
+
+        if (dto.Website != null)
+        {
+            customer.Website = dto.Website;
+        }
+
+        if (dto.Priority != null)
+        {
+            customer.Priority = dto.Priority;
+        }
+
+        if (dto.AssignedToTeamId.HasValue)
+        {
+            customer.AssignedToTeamId = dto.AssignedToTeamId;
+            if (dto.AssignedToTeamId.Value > 0)
+                await _context.Entry(customer).Reference(c => c.AssignedTeam).LoadAsync();
+        }
+
+        if (dto.AssignedToUserId.HasValue)
+        {
+            customer.AssignedToUserId = dto.AssignedToUserId;
+            if (dto.AssignedToUserId.Value > 0)
+                await _context.Entry(customer).Reference(c => c.AssignedToUser).LoadAsync();
+        }
+
         customer.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
@@ -344,7 +436,25 @@ public class CustomerService : ICustomerService
             Country = customer.Country,
             Latitude = customer.Latitude,
             Longitude = customer.Longitude,
+            ContactPersonName = customer.ContactPersonName,
+            CustomerType = customer.CustomerType,
+            Industry = customer.Industry,
+            Website = customer.Website,
+            Priority = customer.Priority,
             Status = customer.Status,
+            AssignedToTeamId = customer.AssignedToTeamId,
+            AssignedTeam = customer.AssignedTeam != null ? new CustomerTeamDto
+            {
+                Id = customer.AssignedTeam.Id,
+                Name = customer.AssignedTeam.Name
+            } : null,
+            AssignedToUserId = customer.AssignedToUserId,
+            AssignedToUser = customer.AssignedToUser != null ? new CustomerUserDto
+            {
+                Id = customer.AssignedToUser.Id,
+                Name = customer.AssignedToUser.Name,
+                Email = customer.AssignedToUser.Email
+            } : null,
             CompanyId = customer.CompanyId,
             CompanyName = customer.Company != null ? customer.Company.Name : string.Empty,
             CreatedAt = customer.CreatedAt,
