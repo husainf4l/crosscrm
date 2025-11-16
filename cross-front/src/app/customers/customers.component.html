@@ -1,135 +1,110 @@
-<div class="min-h-screen bg-gray-50/30 p-6">
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="mb-8">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-light tracking-tight text-gray-900">Customers</h1>
-          <p class="mt-2 text-gray-600">Manage your customer relationships and business opportunities</p>
-        </div>
-        <button 
-          (click)="navigateToCreateCustomer()"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm transition-all duration-200">
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          New Customer
-        </button>
-      </div>
-    </div>
-
+<div class="w-full px-4 sm:px-6 lg:px-8 py-6">
     <!-- Search and Filters -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 p-6 mb-6">
-      <div class="space-y-4">
+    <div class="bg-gray-50 rounded-2xl p-6 mb-6">
+      <div class="flex flex-col lg:flex-row gap-4">
         <!-- Search Bar -->
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <div class="relative flex-1">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </div>
           <input 
             type="text" 
             [(ngModel)]="searchTerm"
             (input)="onSearch($event)"
-            class="block w-full pl-10 pr-3 py-2 border border-gray-300/50 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            class="block w-full pl-12 pr-4 py-3 border-0 bg-white rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
             placeholder="Search customers by company name, contact person, or email...">
         </div>
 
-        <!-- Filter Tags -->
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- Customer Type Filters -->
-          <div class="flex items-center space-x-1">
-            <span class="text-sm font-medium text-gray-700 mr-2">Type:</span>
-            <button 
-              *ngFor="let type of customerTypes"
-              (click)="toggleFilter(selectedCustomerTypes, type.value)"
-              [class]="selectedCustomerTypes.includes(type.value) 
-                ? 'bg-blue-100 text-blue-800 border-blue-200' 
-                : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'"
-              class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors duration-200">
+        <!-- Type Filter -->
+        <div class="w-full lg:w-48">
+          <select 
+            [(ngModel)]="selectedTypeFilter"
+            (change)="onTypeFilterChange()"
+            class="block w-full px-4 py-3 border-0 bg-white rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+            <option value="">All Types</option>
+            <option *ngFor="let type of customerTypes" [value]="type.value">
               {{ type.label }}
-            </button>
-          </div>
-
-          <!-- Status Filters -->
-          <div class="flex items-center space-x-1 ml-4">
-            <span class="text-sm font-medium text-gray-700 mr-2">Status:</span>
-            <button 
-              *ngFor="let status of statuses"
-              (click)="toggleFilter(selectedStatuses, status.value)"
-              [class]="selectedStatuses.includes(status.value) 
-                ? 'bg-green-100 text-green-800 border-green-200' 
-                : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'"
-              class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors duration-200">
-              {{ status.label }}
-            </button>
-          </div>
-
-          <!-- Priority Filters -->
-          <div class="flex items-center space-x-1 ml-4">
-            <span class="text-sm font-medium text-gray-700 mr-2">Priority:</span>
-            <button 
-              *ngFor="let priority of priorities"
-              (click)="toggleFilter(selectedPriorities, priority.value)"
-              [class]="selectedPriorities.includes(priority.value) 
-                ? 'bg-orange-100 text-orange-800 border-orange-200' 
-                : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'"
-              class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors duration-200">
-              {{ priority.label }}
-            </button>
-          </div>
-
-          <!-- Clear Filters -->
-          <button 
-            *ngIf="selectedCustomerTypes.length > 0 || selectedStatuses.length > 0 || selectedPriorities.length > 0"
-            (click)="clearFilters()"
-            class="ml-4 inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition-colors duration-200">
-            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-            Clear Filters
-          </button>
+            </option>
+          </select>
         </div>
+
+        <!-- Status Filter -->
+        <div class="w-full lg:w-48">
+          <select 
+            [(ngModel)]="selectedStatusFilter"
+            (change)="onStatusFilterChange()"
+            class="block w-full px-4 py-3 border-0 bg-white rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+            <option value="">All Statuses</option>
+            <option *ngFor="let status of statuses" [value]="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Priority Filter -->
+        <div class="w-full lg:w-48">
+          <select 
+            [(ngModel)]="selectedPriorityFilter"
+            (change)="onPriorityFilterChange()"
+            class="block w-full px-4 py-3 border-0 bg-white rounded-xl text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+            <option value="">All Priorities</option>
+            <option *ngFor="let priority of priorities" [value]="priority.value">
+              {{ priority.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Clear Filters Button -->
+        <button 
+          *ngIf="selectedTypeFilter || selectedStatusFilter || selectedPriorityFilter || searchTerm"
+          (click)="clearFilters()"
+          class="inline-flex items-center justify-center px-4 py-3 rounded-xl text-sm font-medium text-gray-700 bg-white hover:bg-gray-100 transition-colors duration-200">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Clear
+        </button>
       </div>
     </div>
 
     <!-- Results Summary -->
     <div class="mb-4">
       <p class="text-sm text-gray-600">
-        <span class="font-medium">{{ totalCount }}</span> customers found
-        <span *ngIf="searchTerm || selectedCustomerTypes.length > 0 || selectedStatuses.length > 0 || selectedPriorities.length > 0">
-          with current filters
+        <span class="font-medium text-gray-900">{{ totalCount }}</span> {{ totalCount === 1 ? 'customer' : 'customers' }}
+        <span *ngIf="searchTerm || selectedCustomerTypes.length > 0 || selectedStatuses.length > 0 || selectedPriorities.length > 0" class="text-gray-400">
+          · with filters applied
         </span>
       </p>
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="loading" class="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 p-8 text-center">
-      <div class="inline-flex items-center">
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <div *ngIf="loading" class="bg-gray-50 rounded-2xl p-12 text-center">
+      <div class="inline-flex flex-col items-center">
+        <svg class="animate-spin h-8 w-8 text-blue-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        Loading customers...
+        <span class="text-gray-600">Loading customers...</span>
       </div>
     </div>
 
     <!-- Error State -->
-    <div *ngIf="error && !loading" class="bg-red-50 border border-red-200 rounded-xl p-6 mb-6">
+    <div *ngIf="error && !loading" class="bg-red-50 rounded-2xl p-6 mb-6">
       <div class="flex">
         <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-6 w-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
           </svg>
         </div>
-        <div class="ml-3">
-          <h3 class="text-sm font-medium text-red-800">Error loading customers</h3>
-          <p class="mt-1 text-sm text-red-700">{{ error }}</p>
-          <div class="mt-3">
+        <div class="ml-4">
+          <h3 class="text-base font-medium text-red-900">Error loading customers</h3>
+          <p class="mt-2 text-sm text-red-700">{{ error }}</p>
+          <div class="mt-4">
             <button 
               (click)="loadCustomers()"
-              class="inline-flex items-center px-3 py-2 border border-red-300 shadow-sm text-sm leading-4 font-medium rounded-lg text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+              class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl text-red-700 bg-white hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
               Try Again
             </button>
           </div>
@@ -138,94 +113,89 @@
     </div>
 
     <!-- Customers Table -->
-    <div *ngIf="!loading && !error" class="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 overflow-hidden">
-      <div *ngIf="customers.length === 0" class="text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.196-2.121M17 20v-2a3 3 0 00-5.196-2.121M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.196-2.121M7 20v2M7 20v-2m0 0a3 3 0 015.196-2.121M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+    <div *ngIf="!loading && !error" class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+      <div *ngIf="customers.length === 0" class="text-center py-16 px-4">
+        <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.196-2.121M17 20v-2a3 3 0 00-5.196-2.121M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.196-2.121M7 20v2M7 20v-2m0 0a3 3 0 015.196-2.121M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
         </svg>
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No customers found</h3>
-        <p class="mt-1 text-sm text-gray-500">Get started by creating your first customer.</p>
+        <h3 class="mt-4 text-base font-medium text-gray-900">No customers found</h3>
+        <p class="mt-2 text-sm text-gray-600 max-w-sm mx-auto">Get started by creating your first customer and begin managing your business relationships.</p>
         <div class="mt-6">
           <button 
             (click)="navigateToCreateCustomer()"
-            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+            class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
-            Create Customer
+            Create Your First Customer
           </button>
         </div>
       </div>
 
       <div *ngIf="customers.length > 0" class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200/50">
-          <thead class="bg-gray-50/50">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Contact</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Company</th>
+              <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Contact</th>
+              <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+              <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+              <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Priority</th>
+              <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Revenue</th>
+              <th class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Last Contact</th>
+              <th class="px-4 py-2.5 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200/50">
+          <tbody class="bg-white divide-y divide-gray-200">
             <tr 
               *ngFor="let customer of customers" 
               (click)="navigateToCustomer(customer)"
-              class="hover:bg-gray-50/50 cursor-pointer transition-colors duration-150">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-medium shadow-sm">
-                    {{ customer.companyName.charAt(0) || 'C' }}
-                  </div>
-                  <div class="ml-4">
-                    <div class="text-sm font-semibold text-gray-900">{{ customer.companyName }}</div>
-                    <div class="text-sm text-gray-500" *ngIf="customer.industry">{{ customer.industry }}</div>
-                  </div>
+              class="hover:bg-gray-50 cursor-pointer transition-colors duration-150">
+              <td class="px-4 py-2.5 whitespace-nowrap">
+                <div class="min-w-0">
+                  <div class="text-xs font-semibold text-gray-900 truncate">{{ customer.companyName }}</div>
+                  <div class="text-xs text-gray-500 truncate" *ngIf="customer.industry">{{ customer.industry }}</div>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">{{ customer.contactPersonName || 'N/A' }}</div>
-                <div class="text-sm text-gray-500" *ngIf="customer.contacts && customer.contacts.length > 0">
+              <td class="px-4 py-2.5 whitespace-nowrap">
+                <div class="text-xs font-medium text-gray-900 truncate max-w-xs">{{ customer.contactPersonName || 'N/A' }}</div>
+                <div class="text-xs text-gray-500 truncate max-w-xs" *ngIf="customer.contacts && customer.contacts.length > 0">
                   {{ getPrimaryContact(customer.contacts) }}
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 py-2.5 whitespace-nowrap">
                 <span 
                   [class]="getCustomerTypeConfig(customer.customerType).color"
-                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium">
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">
                   {{ getCustomerTypeConfig(customer.customerType).label }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 py-2.5 whitespace-nowrap">
                 <span 
                   [class]="getStatusConfig(customer.status).color"
-                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium">
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">
                   {{ getStatusConfig(customer.status).label }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
+              <td class="px-4 py-2.5 whitespace-nowrap">
                 <span 
                   [class]="getPriorityConfig(customer.priority || 'medium').color"
-                  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium">
+                  class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">
                   {{ getPriorityConfig(customer.priority || 'medium').label }}
                 </span>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <div>{{ formatCurrency(customer.totalRevenue) }}</div>
+              <td class="px-4 py-2.5 whitespace-nowrap text-xs">
+                <div class="font-semibold text-gray-900">{{ formatCurrency(customer.totalRevenue) }}</div>
                 <div class="text-xs text-gray-500" *ngIf="customer.totalDeals">{{ customer.totalDeals }} deals</div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td class="px-4 py-2.5 whitespace-nowrap text-xs text-gray-600">
                 {{ formatDate(customer.lastContactDate) }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <td class="px-4 py-2.5 whitespace-nowrap text-right text-xs font-medium">
                 <div class="flex items-center justify-end space-x-2">
                   <button 
                     [routerLink]="['/customers', customer.id]"
-                    class="text-blue-600 hover:text-blue-900 transition-colors duration-150">
+                    class="text-blue-600 hover:text-blue-700 transition-colors duration-150 p-1 hover:bg-blue-50 rounded-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -233,7 +203,7 @@
                   </button>
                   <button 
                     (click)="deleteCustomer(customer, $event)"
-                    class="text-red-600 hover:text-red-900 transition-colors duration-150">
+                    class="text-red-600 hover:text-red-700 transition-colors duration-150 p-1 hover:bg-red-50 rounded-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
@@ -246,12 +216,12 @@
       </div>
 
       <!-- Pagination -->
-      <div *ngIf="customers.length > 0" class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200/50 sm:px-6">
+      <div *ngIf="customers.length > 0" class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200">
         <div class="flex-1 flex justify-between sm:hidden">
-          <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50">
+          <button class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors duration-200">
             Previous
           </button>
-          <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50">
+          <button class="ml-3 relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-xl text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 transition-colors duration-200">
             Next
           </button>
         </div>
@@ -269,16 +239,16 @@
           </div>
           <div>
             <nav class="relative z-0 inline-flex rounded-xl shadow-sm -space-x-px" aria-label="Pagination">
-              <button class="relative inline-flex items-center px-2 py-2 rounded-l-xl border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <button class="relative inline-flex items-center px-3 py-2 rounded-l-xl border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200">
                 <span class="sr-only">Previous</span>
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
               </button>
-              <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-600 text-sm font-medium text-white hover:bg-blue-700 transition-colors duration-200">
                 1
               </button>
-              <button class="relative inline-flex items-center px-2 py-2 rounded-r-xl border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+              <button class="relative inline-flex items-center px-3 py-2 rounded-r-xl border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200">
                 <span class="sr-only">Next</span>
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -290,4 +260,3 @@
       </div>
     </div>
   </div>
-</div>

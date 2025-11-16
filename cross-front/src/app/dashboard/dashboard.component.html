@@ -1,92 +1,100 @@
 <app-sidebar>
   <div class="min-h-screen bg-gray-50/30">
-        <!-- Header -->
-        <header class="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 sticky top-0 z-30">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-              <!-- Mobile menu button - only visible on mobile -->
-              <div class="lg:hidden">
-                <button (click)="toggleSidebar()" class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-sm transition-all duration-200">
-                  <span class="sr-only">Open main menu</span>
-                  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                  </svg>
-                </button>
-              </div>
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-sm shadow-sm border-b border-gray-200/50 sticky top-0 z-30">
+      <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Mobile menu button - only visible on mobile -->
+          <div class="lg:hidden">
+            <button (click)="toggleSidebar()" class="inline-flex items-center justify-center p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-white/80 backdrop-blur-sm border border-gray-200/50 shadow-sm transition-all duration-200">
+              <span class="sr-only">Open main menu</span>
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
 
-              <!-- Title - centered on mobile, left-aligned on desktop -->
-              <div class="flex-1 lg:flex-none text-center lg:text-left">
-                <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
-                <p class="text-sm text-gray-600 hidden lg:block" *ngIf="currentUser">
-                  Welcome back, {{ currentUser.name }}
-                </p>
-              </div>
-              
-              <!-- Right side actions -->
-              <div class="flex items-center space-x-4">
-                <!-- New Customer button - hidden on mobile -->
-                <button class="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm transition-all duration-200">
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                  </svg>
-                  New Customer
-                </button>
+          <!-- Title - centered on mobile, left-aligned on desktop -->
+          <div class="flex-1 lg:flex-none text-center lg:text-left">
+            <h1 class="text-2xl font-semibold text-gray-900">{{ pageTitle }}</h1>
+            <p class="text-sm text-gray-600 hidden lg:block" *ngIf="!hasChildRoute && currentUser">
+              Welcome back, {{ currentUser.name }}
+            </p>
+          </div>
+          
+          <!-- Right side actions -->
+          <div class="flex items-center space-x-4">
+            <!-- New Customer button - hidden on mobile - only show on customers page -->
+            <button 
+              *ngIf="isCustomersPage"
+              [routerLink]="['/customers/create']"
+              class="hidden md:inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm transition-all duration-200">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+              New Customer
+            </button>
 
-                <!-- User Menu - only avatar -->
-                <div class="relative">
-                  <button (click)="toggleUserMenu()" 
-                          class="flex items-center p-1 rounded-xl hover:bg-gray-50/50 transition-all duration-200 group"
-                          [attr.aria-expanded]="isUserMenuOpen">
-                    <img [src]="userAvatar" alt="User avatar" class="w-8 h-8 rounded-full ring-2 ring-white shadow-sm">
+            <!-- User Menu - only avatar -->
+            <div class="relative">
+              <button (click)="toggleUserMenu()" 
+                      class="flex items-center p-1 rounded-xl hover:bg-gray-50/50 transition-all duration-200 group"
+                      [attr.aria-expanded]="isUserMenuOpen">
+                <img [src]="userAvatar" alt="User avatar" class="w-8 h-8 rounded-full ring-2 ring-white shadow-sm">
+              </button>
+
+              <!-- User Dropdown Menu -->
+              <div *ngIf="isUserMenuOpen" 
+                   class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200/50 py-2 z-50 animate-in slide-in-from-top-2 duration-200">
+                <div class="px-4 py-3 border-b border-gray-100">
+                  <p class="text-sm font-medium text-gray-900">{{ currentUser?.name || 'User' }}</p>
+                  <p class="text-xs text-gray-500 truncate">{{ currentUser?.email || 'user@example.com' }}</p>
+                </div>
+                
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
+                  <svg class="mr-3 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  Your Profile
+                </a>
+                
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
+                  <svg class="mr-3 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  </svg>
+                  Settings
+                </a>
+                
+                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
+                  <svg class="mr-3 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  Help & Support
+                </a>
+                
+                <div class="border-t border-gray-100 mt-2 pt-2">
+                  <button (click)="logout()" class="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 hover:text-red-900 transition-colors duration-150">
+                    <svg class="mr-3 w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    Sign Out
                   </button>
-
-                  <!-- User Dropdown Menu -->
-                  <div *ngIf="isUserMenuOpen" 
-                       class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200/50 py-2 z-50 animate-in slide-in-from-top-2 duration-200">
-                    <div class="px-4 py-3 border-b border-gray-100">
-                      <p class="text-sm font-medium text-gray-900">{{ currentUser?.name || 'User' }}</p>
-                      <p class="text-xs text-gray-500 truncate">{{ currentUser?.email || 'user@example.com' }}</p>
-                    </div>
-                    
-                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
-                      <svg class="mr-3 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                      </svg>
-                      Your Profile
-                    </a>
-                    
-                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
-                      <svg class="mr-3 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                      </svg>
-                      Settings
-                    </a>
-                    
-                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150">
-                      <svg class="mr-3 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                      </svg>
-                      Help & Support
-                    </a>
-                    
-                    <div class="border-t border-gray-100 mt-2 pt-2">
-                      <button (click)="logout()" class="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 hover:text-red-900 transition-colors duration-150">
-                        <svg class="mr-3 w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                        </svg>
-                        Sign Out
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </header>    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content - Router Outlet for child routes or dashboard content -->
+    <router-outlet></router-outlet>
+
+    <!-- Dashboard Content - Only shown when on /dashboard route -->
+    <main *ngIf="!hasChildRoute" class="w-full py-6 px-4 sm:px-6 lg:px-8">
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 p-6 hover:shadow-md transition-shadow duration-200">
           <div class="flex items-center justify-between">
             <div>

@@ -10,6 +10,7 @@ import { CompanySetupComponent } from './company-setup/company-setup.component';
 import { CustomersComponent } from './customers/customers.component';
 import { CustomerCreateComponent } from './customers/customer-create.component';
 import { CustomerDetailComponent } from './customers/customer-detail.component';
+import { TeamManagementComponent } from './admin/team-management.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,10 +19,26 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'signin', component: SignInComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { 
+    path: 'dashboard', 
+    component: DashboardComponent
+  },
+  { 
+    path: 'customers', 
+    component: DashboardComponent,
+    children: [
+      { path: '', component: CustomersComponent },
+      { path: 'create', component: CustomerCreateComponent },
+      { path: ':id', component: CustomerDetailComponent }
+    ]
+  },
+  { 
+    path: 'team-management', 
+    component: DashboardComponent,
+    children: [
+      { path: '', component: TeamManagementComponent }
+    ]
+  },
   { path: 'company-setup', component: CompanySetupComponent },
-  { path: 'customers', component: CustomersComponent },
-  { path: 'customers/create', component: CustomerCreateComponent },
-  { path: 'customers/:id', component: CustomerDetailComponent },
   { path: '**', redirectTo: '' }
 ];

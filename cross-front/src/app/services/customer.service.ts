@@ -59,6 +59,10 @@ export interface Customer {
   priority: 'low' | 'medium' | 'high' | 'critical';
   assignedUserId?: string;
   assignedUserName?: string;
+  assignedToTeamId?: string;
+  assignedToUserId?: string;
+  assignedTeam?: { id: string; name: string; };
+  assignedToUser?: { id: string; name: string; email: string; };
   
   parentCustomerId?: string;
   subsidiaryIds?: string[];
@@ -105,30 +109,6 @@ export class CustomerService {
 
   constructor(private apiService: ApiService) {}
 
-  async testBackendConnection(): Promise<boolean> {
-    try {
-      console.log('🔍 Testing GraphQL backend connection...');
-      
-      const query = `query TestConnection {
-        customers(first: 1) {
-          edges {
-            node {
-              id
-              name
-            }
-          }
-        }
-      }`;
-
-      await this.apiService.graphql(query).toPromise();
-      console.log('✅ Backend connection successful');
-      return true;
-    } catch (error) {
-      console.log('⚠️ Backend connection test failed:', error);
-      return false;
-    }
-  }
-
   getCustomers(
     first: number = 20, 
     after?: string, 
@@ -157,6 +137,17 @@ export class CustomerService {
             lastActivity
             createdAt
             updatedAt
+            assignedToTeamId
+            assignedToUserId
+            assignedTeam {
+              id
+              name
+            }
+            assignedToUser {
+              id
+              name
+              email
+            }
           }
         }
         pageInfo {
@@ -327,6 +318,17 @@ export class CustomerService {
         lastActivity
         createdAt
         updatedAt
+        assignedToTeamId
+        assignedToUserId
+        assignedTeam {
+          id
+          name
+        }
+        assignedToUser {
+          id
+          name
+          email
+        }
       }
     }`;
 
@@ -400,11 +402,22 @@ export class CustomerService {
         website
         priority
         createdAt
+        assignedToTeamId
+        assignedToUserId
+        assignedTeam {
+          id
+          name
+        }
+        assignedToUser {
+          id
+          name
+          email
+        }
       }
     }`;
 
     // Map our Customer interface to backend CreateCustomerDtoInput
-    const input = {
+    const input: any = {
       name: customerData.companyName || customerData.name, // Backend 'name' field is company name
       email: customerData.email,
       phone: customerData.phone,
@@ -417,6 +430,14 @@ export class CustomerService {
       website: customerData.website,
       priority: customerData.priority
     };
+
+    // Add team and user assignments if provided
+    if (customerData.assignedToTeamId) {
+      input.assignedToTeamId = parseInt(customerData.assignedToTeamId);
+    }
+    if (customerData.assignedToUserId) {
+      input.assignedToUserId = parseInt(customerData.assignedToUserId);
+    }
 
     return this.apiService.graphql<{ createCustomer: Customer }>(mutation, { input }).pipe(
       map(response => {
@@ -475,11 +496,22 @@ export class CustomerService {
         website
         priority
         updatedAt
+        assignedToTeamId
+        assignedToUserId
+        assignedTeam {
+          id
+          name
+        }
+        assignedToUser {
+          id
+          name
+          email
+        }
       }
     }`;
 
     // Map our Customer interface to backend UpdateCustomerDtoInput
-    const input = {
+    const input: any = {
       name: customerData.companyName || customerData.name,
       email: customerData.email,
       phone: customerData.phone,
@@ -493,6 +525,14 @@ export class CustomerService {
       website: customerData.website,
       priority: customerData.priority
     };
+
+    // Add team and user assignments if provided
+    if (customerData.assignedToTeamId !== undefined) {
+      input.assignedToTeamId = customerData.assignedToTeamId ? parseInt(customerData.assignedToTeamId) : null;
+    }
+    if (customerData.assignedToUserId !== undefined) {
+      input.assignedToUserId = customerData.assignedToUserId ? parseInt(customerData.assignedToUserId) : null;
+    }
 
     return this.apiService.graphql<{ updateCustomer: Customer }>(mutation, { id: parseInt(id), input }).pipe(
       map(response => {
