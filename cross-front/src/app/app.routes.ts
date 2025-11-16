@@ -11,6 +11,9 @@ import { CustomersComponent } from './customers/customers.component';
 import { CustomerCreateComponent } from './customers/customer-create.component';
 import { CustomerDetailComponent } from './customers/customer-detail.component';
 import { TeamManagementComponent } from './admin/team-management.component';
+import { CompanyProfileComponent } from './company/company-profile.component';
+import { AcceptInvitationComponent } from './company/accept-invitation.component';
+import { CompanyHierarchyComponent } from './company/company-hierarchy.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +22,7 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'signin', component: SignInComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'accept-invitation/:token', component: AcceptInvitationComponent },
   { 
     path: 'dashboard', 
     component: DashboardComponent
@@ -37,6 +41,14 @@ export const routes: Routes = [
     component: DashboardComponent,
     children: [
       { path: '', component: TeamManagementComponent }
+    ]
+  },
+  { 
+    path: 'company', 
+    component: DashboardComponent,
+    children: [
+      { path: 'profile', component: CompanyProfileComponent },
+      { path: 'hierarchy', component: CompanyHierarchyComponent }
     ]
   },
   { path: 'company-setup', component: CompanySetupComponent },

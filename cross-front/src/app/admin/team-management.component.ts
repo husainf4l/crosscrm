@@ -589,6 +589,16 @@ export class TeamManagementComponent implements OnInit, OnDestroy {
       .substring(0, 2);
   }
 
+  getMemberInitials(member: TeamMember): string {
+    const name = member.userName || member.user?.name || 'Unknown';
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  }
+
   getTeamTypeBadgeClass(type: string): string {
     const classes: Record<string, string> = {
       SALES: 'bg-blue-50 text-blue-700',
