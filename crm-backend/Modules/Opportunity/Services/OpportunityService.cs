@@ -322,7 +322,7 @@ public class OpportunityService : IOpportunityService
         if (dto.Status.HasValue)
         {
             opportunity.Status = dto.Status.Value;
-            
+
             // Update timestamps based on status
             if (dto.Status.Value == OpportunityStatus.Won)
             {

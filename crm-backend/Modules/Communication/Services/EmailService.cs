@@ -115,7 +115,7 @@ public class EmailService : IEmailService
     public async Task<EmailDto> CreateEmailAsync(CreateEmailDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -272,7 +272,7 @@ public class EmailService : IEmailService
         if (dto.Status.HasValue)
         {
             email.Status = dto.Status.Value;
-            
+
             if (dto.Status.Value == EmailStatus.Sent && email.SentAt == null)
             {
                 email.SentAt = DateTime.UtcNow;

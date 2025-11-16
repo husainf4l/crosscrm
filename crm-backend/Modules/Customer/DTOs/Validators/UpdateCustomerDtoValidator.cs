@@ -32,7 +32,7 @@ public class UpdateCustomerDtoValidator : AbstractValidator<UpdateCustomerDto>
             .When(x => !string.IsNullOrWhiteSpace(x.Country));
 
         RuleFor(x => x.Status)
-            .Must(status => string.IsNullOrWhiteSpace(status) || 
+            .Must(status => string.IsNullOrWhiteSpace(status) ||
                 new[] { "active", "inactive", "prospect", "lead", "lost" }.Contains(status.ToLower()))
             .WithMessage("Status must be one of: active, inactive, prospect, lead, lost")
             .When(x => !string.IsNullOrWhiteSpace(x.Status));

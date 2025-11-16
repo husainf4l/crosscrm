@@ -125,7 +125,7 @@ public class QuoteService : IQuoteService
     public async Task<QuoteDto> CreateQuoteAsync(CreateQuoteDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -305,7 +305,7 @@ public class QuoteService : IQuoteService
         if (dto.Status.HasValue)
         {
             quote.Status = dto.Status.Value;
-            
+
             if (dto.Status.Value == QuoteStatus.Sent && quote.SentAt == null)
             {
                 quote.SentAt = DateTime.UtcNow;
@@ -402,7 +402,7 @@ public class QuoteService : IQuoteService
     {
         var opportunity = await _context.Opportunities
             .FirstOrDefaultAsync(o => o.Id == opportunityId && o.CompanyId == companyId);
-        
+
         if (opportunity == null)
             throw new InvalidOperationException("Opportunity not found");
 

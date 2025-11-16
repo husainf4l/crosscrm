@@ -10,11 +10,11 @@ public class PipelineStage
     public bool IsActive { get; set; } = true;
     public bool IsWonStage { get; set; } = false;
     public bool IsLostStage { get; set; } = false;
-    
+
     // Company-specific pipeline
     public int CompanyId { get; set; }
     public Company.Company Company { get; set; } = null!;
-    
+
     public ICollection<Opportunity> Opportunities { get; set; } = new List<Opportunity>();
 }
 

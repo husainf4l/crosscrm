@@ -12,6 +12,7 @@ public interface ITeamService
     Task<TeamMemberDto> AddTeamMemberAsync(AddTeamMemberDto dto);
     Task<TeamMemberDto?> UpdateTeamMemberAsync(int memberId, UpdateTeamMemberDto dto);
     Task<bool> RemoveTeamMemberAsync(int memberId);
+    Task<bool> RemoveTeamMemberAsync(int teamId, int userId); // Overload for teamId + userId
     Task<IEnumerable<TeamMemberDto>> GetTeamMembersAsync(int teamId);
     Task<IEnumerable<TeamDto>> GetTeamsByUserAsync(int userId, int companyId);
 }

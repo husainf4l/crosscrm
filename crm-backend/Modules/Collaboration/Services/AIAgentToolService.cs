@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +9,10 @@ namespace crm_backend.Modules.Collaboration.Services;
 public class AIAgentToolService : IAIAgentToolService
 {
     private readonly CrmDbContext _context;
-    private readonly IServiceProvider _serviceProvider;
 
     public AIAgentToolService(CrmDbContext context, IServiceProvider serviceProvider)
     {
         _context = context;
-        _serviceProvider = serviceProvider;
     }
 
     public async Task<IEnumerable<AIAgentToolDto>> GetToolsByAgentAsync(int agentId, int companyId)
@@ -167,7 +164,7 @@ public class AIAgentToolService : IAIAgentToolService
         _context.AIAgentTools.Add(tool);
         await _context.SaveChangesAsync();
 
-        return await GetToolByIdAsync(tool.Id) 
+        return await GetToolByIdAsync(tool.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created tool");
     }
 

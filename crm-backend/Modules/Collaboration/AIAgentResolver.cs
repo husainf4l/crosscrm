@@ -1,14 +1,11 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Collaboration.DTOs;
-using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Collaboration.DTOs;
+using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.Modules.Collaboration;
 
@@ -25,7 +22,7 @@ public class AIAgentResolver : BaseResolver
         [Service] CrmDbContext context)
     {
         var companyId = await GetActiveCompanyIdOrNullAsync(httpContextAccessor, context);
-        
+
         if (!companyId.HasValue)
         {
             return new List<AIAgentDto>();
@@ -271,7 +268,7 @@ public class AIAgentMutation : BaseResolver
             var assignment = await context.AIAgentAssignments
                 .Include(aa => aa.Agent)
                 .FirstOrDefaultAsync(aa => aa.Id == assignmentId);
-            
+
             if (assignment == null || assignment.CompanyId != companyId)
             {
                 throw new GraphQLException(errorHandling.CreateError("ASSIGNMENT_NOT_FOUND", "Assignment not found or access denied."));

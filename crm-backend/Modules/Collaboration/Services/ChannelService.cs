@@ -1,6 +1,5 @@
 using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -262,7 +261,7 @@ public class ChannelService : IChannelService
 
         await _context.SaveChangesAsync();
 
-        return await GetChannelByIdAsync(channel.Id) 
+        return await GetChannelByIdAsync(channel.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created channel");
     }
 
@@ -335,7 +334,7 @@ public class ChannelService : IChannelService
         _context.ChannelMembers.Add(member);
         await _context.SaveChangesAsync();
 
-        return await GetChannelMemberByIdAsync(member.Id) 
+        return await GetChannelMemberByIdAsync(member.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created member");
     }
 
@@ -344,7 +343,7 @@ public class ChannelService : IChannelService
         var member = await _context.ChannelMembers
             .Include(cm => cm.Channel)
             .FirstOrDefaultAsync(cm => cm.ChannelId == channelId && cm.UserId == userId);
-        
+
         if (member == null || member.Channel.CompanyId != companyId) return false;
 
         _context.ChannelMembers.Remove(member);
@@ -382,14 +381,14 @@ public class ChannelService : IChannelService
     {
         var member = await _context.ChannelMembers
             .FirstOrDefaultAsync(cm => cm.ChannelId == channelId && cm.UserId == userId);
-        
+
         if (member == null) return 0;
 
         var lastReadAt = member.LastReadAt ?? member.JoinedAt;
 
         var unreadCount = await _context.Messages
-            .CountAsync(m => m.ChannelId == channelId 
-                && m.CompanyId == companyId 
+            .CountAsync(m => m.ChannelId == channelId
+                && m.CompanyId == companyId
                 && m.CreatedAt > lastReadAt
                 && !m.IsDeleted);
 
@@ -401,7 +400,7 @@ public class ChannelService : IChannelService
         var member = await _context.ChannelMembers
             .Include(cm => cm.Channel)
             .FirstOrDefaultAsync(cm => cm.ChannelId == channelId && cm.UserId == userId);
-        
+
         if (member == null || member.Channel.CompanyId != companyId) return false;
 
         member.LastReadAt = DateTime.UtcNow;

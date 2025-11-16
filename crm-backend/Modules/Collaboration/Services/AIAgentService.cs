@@ -1,6 +1,5 @@
 using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -189,9 +188,9 @@ public class AIAgentService : IAIAgentService
 
         // Check if assignment already exists
         var existingAssignment = await _context.AIAgentAssignments
-            .FirstOrDefaultAsync(aa => aa.AgentId == dto.AgentId 
-                && aa.EntityType == dto.EntityType 
-                && aa.EntityId == dto.EntityId 
+            .FirstOrDefaultAsync(aa => aa.AgentId == dto.AgentId
+                && aa.EntityType == dto.EntityType
+                && aa.EntityId == dto.EntityId
                 && aa.CompanyId == companyId
                 && aa.IsActive);
 
@@ -262,8 +261,8 @@ public class AIAgentService : IAIAgentService
         var assignments = await _context.AIAgentAssignments
             .Include(aa => aa.Agent)
             .Include(aa => aa.AssignedByUser)
-            .Where(aa => aa.EntityType == entityType 
-                && aa.EntityId == entityId 
+            .Where(aa => aa.EntityType == entityType
+                && aa.EntityId == entityId
                 && aa.CompanyId == companyId
                 && aa.IsActive)
             .Select(aa => new AIAgentAssignmentDto

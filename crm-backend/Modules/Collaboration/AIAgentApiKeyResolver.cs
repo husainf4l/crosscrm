@@ -1,14 +1,11 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Collaboration.DTOs;
-using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Collaboration.DTOs;
+using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.Modules.Collaboration;
 

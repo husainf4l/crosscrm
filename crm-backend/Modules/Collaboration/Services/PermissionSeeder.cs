@@ -1,5 +1,4 @@
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.Modules.Collaboration.Services;

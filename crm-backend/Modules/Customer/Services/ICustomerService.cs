@@ -6,8 +6,8 @@ public interface ICustomerService
 {
     Task<IEnumerable<CustomerDto>> GetAllCustomersAsync(int? companyId = null);
     Task<CustomerConnectionDto> GetCustomersConnectionAsync(
-        int companyId, 
-        int? first = null, 
+        int companyId,
+        int? first = null,
         string? after = null,
         string? search = null,
         CustomerFiltersDto? filters = null);

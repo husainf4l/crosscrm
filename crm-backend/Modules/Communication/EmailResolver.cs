@@ -1,13 +1,9 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Communication.DTOs;
-using crm_backend.Modules.Communication.Services;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Communication.DTOs;
 using crm_backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm_backend.Modules.Communication;
 
@@ -19,12 +15,12 @@ public class EmailResolver : BaseResolver
     [UseFiltering]
     [UseSorting]
     public async Task<IEnumerable<EmailDto>> GetEmails(
-        [Service] IEmailService emailService,
+        [Service] crm_backend.Modules.Communication.Services.IEmailService emailService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context)
     {
         var companyId = await GetActiveCompanyIdOrNullAsync(httpContextAccessor, context);
-        
+
         if (!companyId.HasValue)
         {
             return new List<EmailDto>();
@@ -36,7 +32,7 @@ public class EmailResolver : BaseResolver
     [Authorize]
     public async Task<EmailDto?> GetEmail(
         int id,
-        [Service] IEmailService emailService,
+        [Service] crm_backend.Modules.Communication.Services.IEmailService emailService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context)
     {
@@ -58,7 +54,7 @@ public class EmailMutation : BaseResolver
     [Authorize]
     public async Task<EmailDto> CreateEmail(
         CreateEmailDto input,
-        [Service] IEmailService emailService,
+        [Service] crm_backend.Modules.Communication.Services.IEmailService emailService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context,
         [Service] IValidator<CreateEmailDto> validator,
@@ -112,7 +108,7 @@ public class EmailMutation : BaseResolver
     public async Task<EmailDto?> UpdateEmail(
         int id,
         UpdateEmailDto input,
-        [Service] IEmailService emailService,
+        [Service] crm_backend.Modules.Communication.Services.IEmailService emailService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context,
         [Service] IValidator<UpdateEmailDto> validator,
@@ -150,7 +146,7 @@ public class EmailMutation : BaseResolver
     [Authorize]
     public async Task<bool> DeleteEmail(
         int id,
-        [Service] IEmailService emailService,
+        [Service] crm_backend.Modules.Communication.Services.IEmailService emailService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context,
         [Service] IErrorHandlingService errorHandling)
@@ -181,7 +177,7 @@ public class EmailMutation : BaseResolver
     public async Task<EmailDto?> MarkEmailAsRead(
         int id,
         bool isRead,
-        [Service] IEmailService emailService,
+        [Service] crm_backend.Modules.Communication.Services.IEmailService emailService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context,
         [Service] IErrorHandlingService errorHandling)
@@ -205,6 +201,26 @@ public class EmailMutation : BaseResolver
         catch (Exception ex)
         {
             throw errorHandling.HandleException(ex, "Failed to mark email as read");
+        }
+    }
+
+    [Authorize]
+    public async Task<bool> SendTestEmail(
+        string toEmail,
+        [Service] crm_backend.Services.IEmailService emailService,
+        [Service] IHttpContextAccessor httpContextAccessor,
+        [Service] CrmDbContext context,
+        [Service] IErrorHandlingService errorHandling)
+    {
+        try
+        {
+            // Test email doesn't require company validation
+            var success = await emailService.SendTestEmailAsync(toEmail);
+            return success;
+        }
+        catch (Exception ex)
+        {
+            throw errorHandling.HandleException(ex, "Failed to send test email");
         }
     }
 }

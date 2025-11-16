@@ -1,5 +1,3 @@
-using HotChocolate;
-
 namespace crm_backend.Modules.Collaboration.DTOs;
 
 public class AIAgentApiKeyDto
@@ -62,10 +60,10 @@ public class AIAgentToolDto
     public string Type { get; set; } = string.Empty;
     public string Endpoint { get; set; } = string.Empty;
     public string Method { get; set; } = string.Empty;
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Parameters { get; set; } // JSON schema
-    
+
     public List<string> Permissions { get; set; } = new();
     public bool IsActive { get; set; }
     public int CreatedByUserId { get; set; }
@@ -84,10 +82,10 @@ public class CreateAIAgentToolDto
     public string Type { get; set; } = string.Empty; // ToolType enum as string
     public string Endpoint { get; set; } = string.Empty;
     public string Method { get; set; } = "GET";
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Parameters { get; set; } // JSON schema
-    
+
     public List<string>? Permissions { get; set; }
 }
 
@@ -98,10 +96,10 @@ public class UpdateAIAgentToolDto
     public string? Type { get; set; }
     public string? Endpoint { get; set; }
     public string? Method { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Parameters { get; set; }
-    
+
     public List<string>? Permissions { get; set; }
     public bool? IsActive { get; set; }
 }
@@ -109,7 +107,7 @@ public class UpdateAIAgentToolDto
 public class ExecuteToolDto
 {
     public string ToolName { get; set; } = string.Empty;
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Parameters { get; set; }
 }

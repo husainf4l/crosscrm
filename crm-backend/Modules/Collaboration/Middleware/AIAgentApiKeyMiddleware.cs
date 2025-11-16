@@ -1,18 +1,15 @@
-using crm_backend.Modules.Collaboration.Services;
-using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using crm_backend.Modules.Collaboration.Services;
 
 namespace crm_backend.Modules.Collaboration.Middleware;
 
 public class AIAgentApiKeyMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<AIAgentApiKeyMiddleware> _logger;
 
     public AIAgentApiKeyMiddleware(RequestDelegate next, ILogger<AIAgentApiKeyMiddleware> logger)
     {
         _next = next;
-        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context, IAIAgentApiKeyService apiKeyService)
@@ -26,7 +23,7 @@ public class AIAgentApiKeyMiddleware
 
         // Extract API key from header
         string? apiKey = null;
-        
+
         // Try Authorization header (Bearer token)
         if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
         {

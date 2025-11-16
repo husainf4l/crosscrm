@@ -1,5 +1,4 @@
 using System.Text.Json;
-using HotChocolate;
 
 namespace crm_backend.Modules.Collaboration.DTOs;
 
@@ -44,14 +43,14 @@ public class CustomerStrategyDto
     public string Priority { get; set; } = string.Empty;
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? SuccessMetrics { get; set; }
-    
-    public string? SuccessMetricsJson => SuccessMetrics != null 
-        ? JsonSerializer.Serialize(SuccessMetrics) 
+
+    public string? SuccessMetricsJson => SuccessMetrics != null
+        ? JsonSerializer.Serialize(SuccessMetrics)
         : null;
-    
+
     public int CustomerId { get; set; }
     public string? CustomerName { get; set; }
     public int? WorkspaceId { get; set; }
@@ -76,15 +75,15 @@ public class CreateCustomerStrategyDto
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public int? AssignedToTeamId { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? SuccessMetrics { get; set; }
-    
+
     public string? SuccessMetricsJson
     {
         get => SuccessMetrics != null ? JsonSerializer.Serialize(SuccessMetrics) : null;
-        set => SuccessMetrics = !string.IsNullOrEmpty(value) 
-            ? JsonSerializer.Deserialize<Dictionary<string, object>>(value) 
+        set => SuccessMetrics = !string.IsNullOrEmpty(value)
+            ? JsonSerializer.Deserialize<Dictionary<string, object>>(value)
             : null;
     }
 }
@@ -99,15 +98,15 @@ public class UpdateCustomerStrategyDto
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public int? AssignedToTeamId { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? SuccessMetrics { get; set; }
-    
+
     public string? SuccessMetricsJson
     {
         get => SuccessMetrics != null ? JsonSerializer.Serialize(SuccessMetrics) : null;
-        set => SuccessMetrics = !string.IsNullOrEmpty(value) 
-            ? JsonSerializer.Deserialize<Dictionary<string, object>>(value) 
+        set => SuccessMetrics = !string.IsNullOrEmpty(value)
+            ? JsonSerializer.Deserialize<Dictionary<string, object>>(value)
             : null;
     }
 }

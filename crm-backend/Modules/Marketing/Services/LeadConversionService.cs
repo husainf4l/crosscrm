@@ -83,10 +83,10 @@ public class LeadConversionService : ILeadConversionService
                 .Where(ps => ps.CompanyId == companyId)
                 .OrderBy(ps => ps.Order)
                 .FirstOrDefaultAsync();
-            
+
             if (defaultStage == null)
                 throw new InvalidOperationException("No pipeline stages found for company");
-            
+
             var createOpportunityDto = new CreateOpportunityDto
             {
                 CustomerId = customer.Id,

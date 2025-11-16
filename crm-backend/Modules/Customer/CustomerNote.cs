@@ -22,7 +22,7 @@ public class CustomerNote
     public bool IsPrivate { get; set; } = false; // Private notes only visible to creator/company
     public bool IsPinned { get; set; } = false; // Pin important notes
     public string? Tags { get; set; } // JSON array of tags
-    
+
     // Navigation to Comments (polymorphic via NoteComment)
 }
 

@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using crm_backend.Modules.Collaboration.DTOs;
 using crm_backend.Modules.Collaboration.Services;
 using FluentValidation;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 
 namespace crm_backend.Modules.Collaboration.Controllers;
 
@@ -105,7 +104,7 @@ public class AIAgentApiController : ControllerBase
     {
         if (HttpContext.Items.TryGetValue("AIAgentId", out var agentId) && agentId is int id)
             return id;
-        
+
         var claim = HttpContext.User.FindFirst("AIAgentId");
         if (claim != null && int.TryParse(claim.Value, out var claimId))
             return claimId;
@@ -117,7 +116,7 @@ public class AIAgentApiController : ControllerBase
     {
         if (HttpContext.Items.TryGetValue("AIAgentApiKeyId", out var apiKeyId) && apiKeyId is int id)
             return id;
-        
+
         var claim = HttpContext.User.FindFirst("AIAgentApiKeyId");
         if (claim != null && int.TryParse(claim.Value, out var claimId))
             return claimId;
@@ -129,7 +128,7 @@ public class AIAgentApiController : ControllerBase
     {
         if (HttpContext.Items.TryGetValue("AIAgentCompanyId", out var companyId) && companyId is int id)
             return id;
-        
+
         var claim = HttpContext.User.FindFirst("CompanyId");
         if (claim != null && int.TryParse(claim.Value, out var claimId))
             return claimId;

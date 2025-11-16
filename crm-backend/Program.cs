@@ -1,22 +1,23 @@
+using System.Text;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Collaboration.DTOs.Validators;
+using crm_backend.Modules.Communication.DTOs.Validators;
+using crm_backend.Modules.Company.DTOs.Validators;
+using crm_backend.Modules.Contract.DTOs.Validators;
+using crm_backend.Modules.Customer.DTOs.Validators;
+using crm_backend.Modules.Financial.DTOs.Validators;
+using crm_backend.Modules.Marketing.DTOs.Validators;
+using crm_backend.Modules.Opportunity.DTOs.Validators;
+using crm_backend.Modules.User.DTOs.Validators;
 using crm_backend.Modules.User.Services;
 using crm_backend.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using DotNetEnv;
 using FluentValidation;
-using crm_backend.Modules.Customer.DTOs.Validators;
-using crm_backend.Modules.User.DTOs.Validators;
-using crm_backend.Modules.Company.DTOs.Validators;
-using crm_backend.Modules.Opportunity.DTOs.Validators;
-using crm_backend.Modules.Financial.DTOs.Validators;
-using crm_backend.Modules.Communication.DTOs.Validators;
-using crm_backend.Modules.Marketing.DTOs.Validators;
-using crm_backend.Modules.Contract.DTOs.Validators;
-using crm_backend.Modules.Collaboration.DTOs.Validators;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using SendGrid;
 
 // Load environment variables from .env file
 Env.Load();
@@ -37,6 +38,8 @@ builder.Services.AddGraphQLServer()
     .AddInMemorySubscriptions()
     .AddTypeExtension<crm_backend.Modules.User.UserResolver>()
     .AddTypeExtension<crm_backend.Modules.User.UserMutation>()
+    .AddTypeExtension<crm_backend.Modules.User.UserInvitationResolver>()
+    .AddTypeExtension<crm_backend.Modules.User.UserInvitationMutation>()
     .AddTypeExtension<crm_backend.Modules.Company.CompanyResolver>()
     .AddTypeExtension<crm_backend.Modules.Company.CompanyMutation>()
     .AddTypeExtension<crm_backend.Modules.Customer.CustomerResolver>()
@@ -103,19 +106,31 @@ builder.Services.AddGraphQLServer()
     .AddFiltering()
     .AddSorting()
     .AddProjections();
-builder.Services.AddDbContext<CrmDbContext>(options => {
+builder.Services.AddDbContext<CrmDbContext>(options =>
+{
     var host = Environment.GetEnvironmentVariable("DB_HOST");
     var username = Environment.GetEnvironmentVariable("DB_USER");
     var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
     var database = Environment.GetEnvironmentVariable("DB_NAME");
     var port = Environment.GetEnvironmentVariable("DB_PORT") ?? "5432";
+
+    // Validate required environment variables
+    if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(username) ||
+        string.IsNullOrEmpty(password) || string.IsNullOrEmpty(database))
+    {
+        throw new InvalidOperationException(
+            "Missing required database environment variables. Please ensure DB_HOST, DB_USER, DB_PASSWORD, and DB_NAME are set in your .env file.");
+    }
+
     var connectionString = $"Host={host};Port={port};Username={username};Password={password};Database={database}";
+    Console.WriteLine($"🔗 Connecting to database: {host}:{port}/{database} as {username}");
     options.UseNpgsql(connectionString);
 });
 
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserInvitationService, UserInvitationService>();
 builder.Services.AddScoped<crm_backend.Modules.Company.Services.ICompanyService, crm_backend.Modules.Company.Services.CompanyService>();
 builder.Services.AddScoped<crm_backend.Modules.Customer.Services.ICustomerService, crm_backend.Modules.Customer.Services.CustomerService>();
 builder.Services.AddScoped<crm_backend.Modules.Customer.Services.IContactService, crm_backend.Modules.Customer.Services.ContactService>();
@@ -140,6 +155,7 @@ builder.Services.AddScoped<crm_backend.Modules.Financial.Services.IPaymentServic
 
 // Phase 3: Register Communication services
 builder.Services.AddScoped<crm_backend.Modules.Communication.Services.IEmailService, crm_backend.Modules.Communication.Services.EmailService>();
+builder.Services.AddScoped<crm_backend.Services.IEmailService, crm_backend.Services.EmailService>();
 builder.Services.AddScoped<crm_backend.Modules.Communication.Services.IAppointmentService, crm_backend.Modules.Communication.Services.AppointmentService>();
 builder.Services.AddScoped<crm_backend.Modules.Communication.Services.ITaskService, crm_backend.Modules.Communication.Services.TaskService>();
 
@@ -189,12 +205,25 @@ builder.Services.AddScoped<crm_backend.Modules.Collaboration.Services.INotificat
 // Collaboration: Register Search services
 builder.Services.AddScoped<crm_backend.Modules.Collaboration.Services.ISearchService, crm_backend.Modules.Collaboration.Services.SearchService>();
 
+// Register SendGrid client
+builder.Services.AddSingleton<ISendGridClient>(provider =>
+{
+    var sendGridApiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
+    if (string.IsNullOrEmpty(sendGridApiKey))
+    {
+        throw new InvalidOperationException("SENDGRID_API_KEY environment variable is required.");
+    }
+    return new SendGridClient(sendGridApiKey);
+});
+
 // Register error handling service
 builder.Services.AddScoped<IErrorHandlingService, ErrorHandlingService>();
 
 // Register FluentValidation validators
 builder.Services.AddValidatorsFromAssemblyContaining<CreateCustomerDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<InviteUserDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<AcceptInvitationDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateCompanyDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOpportunityDtoValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateQuoteDtoValidator>();
@@ -232,9 +261,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// Add CORS to allow all domains
+// Add CORS configuration for frontend on port 4200
 builder.Services.AddCors(options =>
 {
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:4200",
+                "https://localhost:4200",
+                "http://127.0.0.1:4200",
+                "https://127.0.0.1:4200"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials(); // Allow credentials for authentication
+    });
+
+    // Fallback policy for development
     options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
@@ -252,7 +295,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend"); // Use frontend-specific CORS policy
 app.UseWebSockets(); // Required for GraphQL subscriptions
 
 // API Key authentication middleware (before JWT auth for API routes)
@@ -272,7 +315,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("🔄 Applying automatic database migrations...");
         await dbContext.Database.MigrateAsync();
         Console.WriteLine("✅ Database migrations applied successfully.");
-        
+
         // Seed permissions
         Console.WriteLine("🔄 Seeding permissions...");
         var permissionSeeder = new crm_backend.Modules.Collaboration.Services.PermissionSeeder(dbContext);
@@ -293,7 +336,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

@@ -152,7 +152,7 @@ public class TaskService : ITaskService
     public async Task<TaskDto> CreateTaskAsync(CreateTaskDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -294,7 +294,7 @@ public class TaskService : ITaskService
         if (dto.Status.HasValue)
         {
             task.Status = dto.Status.Value;
-            
+
             if (dto.Status.Value == TaskStatus.Completed && task.CompletedAt == null)
             {
                 task.CompletedAt = DateTime.UtcNow;
@@ -386,8 +386,8 @@ public class TaskService : ITaskService
             .Include(t => t.Ticket)
             .Include(t => t.AssignedToUser)
             .Include(t => t.CreatedByUser)
-            .Where(t => t.CompanyId == companyId 
-                && t.DueDate.HasValue 
+            .Where(t => t.CompanyId == companyId
+                && t.DueDate.HasValue
                 && t.DueDate.Value < DateTime.UtcNow
                 && t.Status != TaskStatus.Completed
                 && t.Status != TaskStatus.Cancelled)

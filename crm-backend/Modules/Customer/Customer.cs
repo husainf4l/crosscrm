@@ -9,45 +9,45 @@ public class Customer
     public string? Address { get; set; }
     public string? City { get; set; }
     public string? Country { get; set; }
-    
+
     // GPS Coordinates
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
-    
+
     // Additional Business Fields
     public string? ContactPersonName { get; set; }
     public string? CustomerType { get; set; } = "individual"; // "individual", "business", "enterprise"
     public string? Industry { get; set; }
     public string? Website { get; set; }
     public string? Priority { get; set; } = "medium"; // "low", "medium", "high", "critical"
-    
+
     // Relationship with Company
     public int CompanyId { get; set; }
     public crm_backend.Modules.Company.Company? Company { get; set; }
-    
+
     // Sales Assignment
     public int? AssignedToTeamId { get; set; }
     public crm_backend.Modules.Collaboration.Team? AssignedTeam { get; set; }
-    
+
     public int? AssignedToUserId { get; set; }
     public crm_backend.Modules.User.User? AssignedToUser { get; set; }
-    
+
     public int? ConvertedFromLeadId { get; set; }
     public crm_backend.Modules.Marketing.Lead? ConvertedFromLead { get; set; }
-    
+
     // Territory Assignment
     public int? TerritoryId { get; set; }
     public Opportunity.Territory? Territory { get; set; }
-    
+
     // Account Relationship (B2B)
     // Customer represents the relationship/transaction, Account is the company
     public int? AccountId { get; set; }
     public Account? Account { get; set; }
-    
+
     // Timestamps
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
-    
+
     // Customer Status
     public string Status { get; set; } = "active"; // "active", "inactive", "prospect", "lost", etc.
 

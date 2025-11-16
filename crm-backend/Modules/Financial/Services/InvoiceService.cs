@@ -132,7 +132,7 @@ public class InvoiceService : IInvoiceService
     public async Task<InvoiceDto> CreateInvoiceAsync(CreateInvoiceDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -379,13 +379,13 @@ public class InvoiceService : IInvoiceService
         var invoice = await _context.Invoices
             .Include(i => i.Payments)
             .FirstOrDefaultAsync(i => i.Id == invoiceId);
-        
+
         if (invoice == null) return;
-        
+
         // Calculate total paid amount
         var totalPaid = invoice.Payments.Sum(p => p.Amount);
         invoice.PaidAmount = totalPaid;
-        
+
         // Auto-update status based on payments and due date
         if (totalPaid >= invoice.TotalAmount)
         {
@@ -401,11 +401,11 @@ public class InvoiceService : IInvoiceService
         {
             invoice.Status = InvoiceStatus.Overdue;
         }
-        
+
         invoice.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
     }
-    
+
     public async Task UpdateInvoiceStatusAsync_OLD(int invoiceId)
     {
         var invoice = await _context.Invoices.FindAsync(invoiceId);

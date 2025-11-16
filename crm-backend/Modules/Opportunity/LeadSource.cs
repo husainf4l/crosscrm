@@ -6,10 +6,10 @@ public class LeadSource
     public string Name { get; set; } = string.Empty; // "Website", "Referral", "Cold Call", "Trade Show", etc.
     public string? Description { get; set; }
     public bool IsActive { get; set; } = true;
-    
+
     public int CompanyId { get; set; }
     public Company.Company Company { get; set; } = null!;
-    
+
     public ICollection<Opportunity> Opportunities { get; set; } = new List<Opportunity>();
 }
 

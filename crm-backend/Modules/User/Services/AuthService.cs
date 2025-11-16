@@ -1,12 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using crm_backend.Data;
+using crm_backend.Modules.Customer.Services;
 using crm_backend.Modules.User.DTOs;
 using Microsoft.EntityFrameworkCore;
-using BCrypt.Net;
-using crm_backend.Modules.Customer.Services;
+using Microsoft.IdentityModel.Tokens;
 
 namespace crm_backend.Modules.User.Services;
 
@@ -20,14 +19,10 @@ public interface IAuthService
 public class AuthService : IAuthService
 {
     private readonly CrmDbContext _context;
-    private readonly IConfiguration _configuration;
-    private readonly IS3Service _s3Service;
 
     public AuthService(CrmDbContext context, IConfiguration configuration, IS3Service s3Service)
     {
         _context = context;
-        _configuration = configuration;
-        _s3Service = s3Service;
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
@@ -43,7 +38,7 @@ public class AuthService : IAuthService
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
         // Generate default avatar if not provided
-        var defaultAvatar = string.IsNullOrEmpty(dto.Avatar) 
+        var defaultAvatar = string.IsNullOrEmpty(dto.Avatar)
             ? GenerateDefaultAvatar(dto.Name, dto.Email)
             : dto.Avatar;
 
@@ -219,24 +214,11 @@ public class AuthService : IAuthService
         var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME") ?? "4wk-garage-media";
         var region = Environment.GetEnvironmentVariable("AWS_REGION") ?? "me-central-1";
         var defaultAvatarUrl = $"https://{bucketName}.s3.{region}.amazonaws.com/crm-assets/default-avatar.webp";
-        
+
         return defaultAvatarUrl;
-        
+
         // Option 2: Fallback to Dicebear API for personalized avatars
         // var seed = email.ToLower().Trim();
         // return $"https://api.dicebear.com/7.x/initials/svg?seed={Uri.EscapeDataString(seed)}&backgroundColor=random";
-    }
-
-    private string GetInitials(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name)) return "U";
-        
-        var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        if (words.Length == 1)
-        {
-            return words[0].Substring(0, Math.Min(2, words[0].Length)).ToUpper();
-        }
-        
-        return (words[0].Substring(0, 1) + words[words.Length - 1].Substring(0, 1)).ToUpper();
     }
 }

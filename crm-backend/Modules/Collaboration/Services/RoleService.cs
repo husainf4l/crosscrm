@@ -75,7 +75,7 @@ public class RoleService : IRoleService
     public async Task<RoleDto> CreateRoleAsync(CreateRoleDto dto)
     {
         var companyId = dto.CompanyId;
-        
+
         // Verify company exists if provided
         if (companyId.HasValue)
         {
@@ -88,7 +88,7 @@ public class RoleService : IRoleService
 
         // Check if role name already exists for this company
         var existingRole = await _context.Roles
-            .FirstOrDefaultAsync(r => r.Name == dto.Name && 
+            .FirstOrDefaultAsync(r => r.Name == dto.Name &&
                 (r.CompanyId == companyId || (r.IsSystemRole && !companyId.HasValue)));
         if (existingRole != null)
         {
@@ -256,7 +256,7 @@ public class RoleService : IRoleService
     {
         var rolePermission = await _context.RolePermissions
             .FirstOrDefaultAsync(rp => rp.RoleId == roleId && rp.PermissionId == permissionId);
-        
+
         if (rolePermission == null) return false;
 
         _context.RolePermissions.Remove(rolePermission);

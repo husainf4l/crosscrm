@@ -1,0 +1,28 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.cs]
+# Essential unused code detection - treat as warnings
+dotnet_diagnostic.IDE0051.severity = warning  # Remove unused private members
+dotnet_diagnostic.IDE0052.severity = warning  # Remove unread private members
+dotnet_diagnostic.CS0168.severity = error     # Variable declared but never used
+dotnet_diagnostic.CS0219.severity = error     # Variable assigned but never used  
+dotnet_diagnostic.CS0414.severity = error     # Field assigned but never used
+
+# Import cleanup - treat as suggestions
+dotnet_diagnostic.IDE0005.severity = suggestion  # Remove unnecessary imports
+dotnet_separate_import_directive_groups = false
+dotnet_sort_system_directives_first = true
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

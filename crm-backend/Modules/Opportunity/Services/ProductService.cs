@@ -216,7 +216,7 @@ public class ProductService : IProductService
         // Check if any opportunity products are using this product
         var hasOpportunityProducts = await _context.OpportunityProducts
             .AnyAsync(op => op.ProductId == id);
-        
+
         if (hasOpportunityProducts)
         {
             throw new InvalidOperationException("Cannot delete product that has associated opportunity products.");

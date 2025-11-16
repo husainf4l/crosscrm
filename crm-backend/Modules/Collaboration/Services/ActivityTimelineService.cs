@@ -1,6 +1,5 @@
 using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,7 +61,7 @@ public class ActivityTimelineService : IActivityTimelineService
             await _context.SaveChangesAsync();
         }
 
-        return await GetActivityByIdAsync(activity.Id) 
+        return await GetActivityByIdAsync(activity.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created activity");
     }
 
@@ -190,7 +189,7 @@ public class ActivityTimelineService : IActivityTimelineService
         var feed = await _context.ActivityFeeds
             .Include(af => af.Activity)
             .FirstOrDefaultAsync(af => af.ActivityId == activityId && af.UserId == userId);
-        
+
         if (feed == null || feed.Activity.CompanyId != companyId) return false;
 
         feed.IsRead = true;
@@ -205,8 +204,8 @@ public class ActivityTimelineService : IActivityTimelineService
     {
         var unreadCount = await _context.ActivityFeeds
             .Include(af => af.Activity)
-            .CountAsync(af => af.UserId == userId 
-                && af.Activity.CompanyId == companyId 
+            .CountAsync(af => af.UserId == userId
+                && af.Activity.CompanyId == companyId
                 && !af.IsRead);
 
         return unreadCount;

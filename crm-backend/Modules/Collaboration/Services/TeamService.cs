@@ -15,36 +15,54 @@ public class TeamService : ITeamService
 
     public async Task<IEnumerable<TeamDto>> GetAllTeamsAsync(int? companyId = null)
     {
-        var query = _context.Teams
+        var teamsQuery = _context.Teams
             .Include(t => t.Company)
             .Include(t => t.Manager)
             .Include(t => t.Members)
+                .ThenInclude(m => m.User)
             .AsQueryable();
 
         if (companyId.HasValue)
         {
-            query = query.Where(t => t.CompanyId == companyId.Value);
+            teamsQuery = teamsQuery.Where(t => t.CompanyId == companyId.Value);
         }
 
-        var teams = await query
-            .Select(t => new TeamDto
-            {
-                Id = t.Id,
-                Name = t.Name,
-                Description = t.Description,
-                Type = t.Type,
-                IsActive = t.IsActive,
-                ManagerUserId = t.ManagerUserId,
-                ManagerName = t.Manager != null ? t.Manager.Name : null,
-                CompanyId = t.CompanyId,
-                CompanyName = t.Company.Name,
-                MemberCount = t.Members.Count(m => m.IsActive),
-                CreatedAt = t.CreatedAt,
-                UpdatedAt = t.UpdatedAt
-            })
-            .ToListAsync();
+        var teams = await teamsQuery.ToListAsync();
 
-        return teams;
+        return teams.Select(team => new TeamDto
+        {
+            Id = team.Id,
+            Name = team.Name,
+            Description = team.Description,
+            Type = team.Type,
+            IsActive = team.IsActive,
+            ManagerUserId = team.ManagerUserId,
+            ManagerName = team.Manager?.Name,
+            Manager = team.Manager != null ? new ManagerBasicDto
+            {
+                Id = team.Manager.Id,
+                Name = team.Manager.Name,
+                Email = team.Manager.Email
+            } : null,
+            CompanyId = team.CompanyId,
+            CompanyName = team.Company.Name,
+            MemberCount = team.Members.Count(m => m.IsActive),
+            Members = team.Members.Where(m => m.IsActive).Select(m => new TeamMemberDto
+            {
+                Id = m.Id,
+                TeamId = m.TeamId,
+                TeamName = team.Name,
+                UserId = m.UserId,
+                UserName = m.User.Name,
+                UserEmail = m.User.Email,
+                Role = m.Role,
+                IsActive = m.IsActive,
+                JoinedAt = m.JoinedAt,
+                LeftAt = m.LeftAt
+            }).ToList(),
+            CreatedAt = team.CreatedAt,
+            UpdatedAt = team.UpdatedAt
+        }).ToList();
     }
 
     public async Task<TeamDto?> GetTeamByIdAsync(int id)
@@ -97,7 +115,7 @@ public class TeamService : ITeamService
     public async Task<TeamDto> CreateTeamAsync(CreateTeamDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -190,6 +208,8 @@ public class TeamService : ITeamService
             .FirstOrDefaultAsync(t => t.Id == id);
 
         if (team == null) return null;
+
+        // Note: CompanyId is intentionally not updated as teams cannot change companies
 
         if (!string.IsNullOrWhiteSpace(dto.Name))
         {
@@ -366,6 +386,19 @@ public class TeamService : ITeamService
     public async Task<bool> RemoveTeamMemberAsync(int memberId)
     {
         var member = await _context.TeamMembers.FindAsync(memberId);
+        if (member == null) return false;
+
+        member.IsActive = false;
+        member.LeftAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> RemoveTeamMemberAsync(int teamId, int userId)
+    {
+        var member = await _context.TeamMembers
+            .FirstOrDefaultAsync(tm => tm.TeamId == teamId && tm.UserId == userId && tm.IsActive);
+
         if (member == null) return false;
 
         member.IsActive = false;

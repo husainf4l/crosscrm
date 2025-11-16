@@ -130,11 +130,11 @@ public class UserRoleService : IUserRoleService
     {
         var hasRole = await _context.UserRoles
             .Include(ur => ur.Role)
-            .AnyAsync(ur => ur.UserId == userId 
-                && ur.CompanyId == companyId 
-                && ur.IsActive 
+            .AnyAsync(ur => ur.UserId == userId
+                && ur.CompanyId == companyId
+                && ur.IsActive
                 && ur.Role.Name == roleName);
-        
+
         return hasRole;
     }
 

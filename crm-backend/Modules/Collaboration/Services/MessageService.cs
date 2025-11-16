@@ -1,6 +1,5 @@
 using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -196,7 +195,7 @@ public class MessageService : IMessageService
 
         await _context.SaveChangesAsync();
 
-        return await GetMessageByIdAsync(message.Id) 
+        return await GetMessageByIdAsync(message.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created message");
     }
 
@@ -272,7 +271,7 @@ public class MessageService : IMessageService
 
         await _context.SaveChangesAsync();
 
-        return await GetMessageByIdAsync(message.Id) 
+        return await GetMessageByIdAsync(message.Id)
             ?? throw new InvalidOperationException("Failed to retrieve message");
     }
 
@@ -303,7 +302,7 @@ public class MessageService : IMessageService
 
         await _context.SaveChangesAsync();
 
-        return await GetMessageByIdAsync(message.Id) 
+        return await GetMessageByIdAsync(message.Id)
             ?? throw new InvalidOperationException("Failed to retrieve message");
     }
 

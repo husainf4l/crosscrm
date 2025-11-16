@@ -1,13 +1,13 @@
-using Microsoft.EntityFrameworkCore;
-using crm_backend.Modules.User;
-using crm_backend.Modules.Company;
-using crm_backend.Modules.Customer;
-using crm_backend.Modules.Opportunity;
-using crm_backend.Modules.Financial;
-using crm_backend.Modules.Communication;
-using crm_backend.Modules.Marketing;
-using crm_backend.Modules.Contract;
 using crm_backend.Modules.Collaboration;
+using crm_backend.Modules.Communication;
+using crm_backend.Modules.Company;
+using crm_backend.Modules.Contract;
+using crm_backend.Modules.Customer;
+using crm_backend.Modules.Financial;
+using crm_backend.Modules.Marketing;
+using crm_backend.Modules.Opportunity;
+using crm_backend.Modules.User;
+using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.Data;
 
@@ -17,6 +17,7 @@ public class CrmDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<UserInvitation> UserInvitations { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<crm_backend.Modules.User.UserCompany> UserCompanies { get; set; }
     public DbSet<Customer> Customers { get; set; }
@@ -28,14 +29,14 @@ public class CrmDbContext : DbContext
     public DbSet<CustomerPreference> CustomerPreferences { get; set; }
     public DbSet<CustomerCategory> CustomerCategories { get; set; }
     public DbSet<CustomerCategoryMapping> CustomerCategoryMappings { get; set; }
-    
+
     // Phase 1: Sales Pipeline models
     public DbSet<Opportunity> Opportunities { get; set; }
     public DbSet<PipelineStage> PipelineStages { get; set; }
     public DbSet<LeadSource> LeadSources { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<OpportunityProduct> OpportunityProducts { get; set; }
-    
+
     // Phase 4: Enterprise CRM Patterns (TODO: Implement these models)
     // public DbSet<Opportunity.Territory> Territories { get; set; }
     // public DbSet<Opportunity.ProductCategory> ProductCategories { get; set; }
@@ -51,33 +52,33 @@ public class CrmDbContext : DbContext
     // public DbSet<Collaboration.ApprovalResponse> ApprovalResponses { get; set; }
     // public DbSet<Communication.DocumentTemplate> DocumentTemplates { get; set; }
     // public DbSet<Communication.EmailTemplate> EmailTemplates { get; set; }
-    
+
     // Phase 2: Financial models
     public DbSet<Quote> Quotes { get; set; }
     public DbSet<QuoteLineItem> QuoteLineItems { get; set; }
     public DbSet<Invoice> Invoices { get; set; }
     public DbSet<InvoiceLineItem> InvoiceLineItems { get; set; }
     public DbSet<Payment> Payments { get; set; }
-    
+
     // Financial Integration models
     public DbSet<FinancialIntegration> FinancialIntegrations { get; set; }
     public DbSet<SyncHistory> SyncHistories { get; set; }
-    
+
     // Phase 3: Communication models
     public DbSet<Email> Emails { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<AppointmentAttendee> AppointmentAttendees { get; set; }
     public DbSet<crm_backend.Modules.Communication.Task> Tasks { get; set; }
-    
+
     // Phase 4: Marketing models
     public DbSet<Lead> Leads { get; set; }
     public DbSet<Campaign> Campaigns { get; set; }
     public DbSet<CampaignMember> CampaignMembers { get; set; }
-    
+
     // Phase 5: Contract models
     public DbSet<Contract> Contracts { get; set; }
     public DbSet<ContractLineItem> ContractLineItems { get; set; }
-    
+
     // Collaboration: Team & Role Management
     public DbSet<Team> Teams { get; set; }
     public DbSet<TeamMember> TeamMembers { get; set; }
@@ -85,43 +86,43 @@ public class CrmDbContext : DbContext
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
-    
+
     // Collaboration: AI Agent Management
     public DbSet<AIAgent> AIAgents { get; set; }
     public DbSet<AIAgentAssignment> AIAgentAssignments { get; set; }
     public DbSet<AIAgentInteraction> AIAgentInteractions { get; set; }
-    
+
     // Collaboration: Customer Workspace
     public DbSet<CustomerWorkspace> CustomerWorkspaces { get; set; }
     public DbSet<CustomerStrategy> CustomerStrategies { get; set; }
     public DbSet<CustomerIdea> CustomerIdeas { get; set; }
     public DbSet<IdeaVote> IdeaVotes { get; set; }
     public DbSet<NoteComment> NoteComments { get; set; }
-    
+
     // Collaboration: Real-Time Communication
     public DbSet<Channel> Channels { get; set; }
     public DbSet<ChannelMember> ChannelMembers { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<MessageMention> MessageMentions { get; set; }
     public DbSet<MessageAttachment> MessageAttachments { get; set; }
-    
+
     // Collaboration: Activity Timeline
     public DbSet<ActivityTimeline> ActivityTimelines { get; set; }
     public DbSet<ActivityFeed> ActivityFeeds { get; set; }
-    
+
     // Collaboration: AI Agent API Keys & Tools
     public DbSet<AIAgentApiKey> AIAgentApiKeys { get; set; }
     public DbSet<AIAgentApiKeyUsageLog> AIAgentApiKeyUsageLogs { get; set; }
     public DbSet<AIAgentTool> AIAgentTools { get; set; }
     public DbSet<AIAgentToolUsageLog> AIAgentToolUsageLogs { get; set; }
-    
+
     // Collaboration: Notifications
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<NotificationPreference> NotificationPreferences { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.ConfigureWarnings(warnings => 
+        optionsBuilder.ConfigureWarnings(warnings =>
             warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
     }
 
@@ -154,6 +155,45 @@ public class CrmDbContext : DbContext
             .WithMany(u => u.DirectReports)
             .HasForeignKey(u => u.ManagerId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        // Configure UserInvitation relationships
+        modelBuilder.Entity<UserInvitation>()
+            .HasOne(ui => ui.Company)
+            .WithMany()
+            .HasForeignKey(ui => ui.CompanyId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserInvitation>()
+            .HasOne(ui => ui.InvitedByUser)
+            .WithMany()
+            .HasForeignKey(ui => ui.InvitedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserInvitation>()
+            .HasOne(ui => ui.AcceptedByUser)
+            .WithMany()
+            .HasForeignKey(ui => ui.AcceptedByUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<UserInvitation>()
+            .HasOne(ui => ui.Role)
+            .WithMany()
+            .HasForeignKey(ui => ui.RoleId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<UserInvitation>()
+            .HasOne(ui => ui.Team)
+            .WithMany()
+            .HasForeignKey(ui => ui.TeamId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Configure UserInvitation indexes and constraints
+        modelBuilder.Entity<UserInvitation>()
+            .HasIndex(ui => ui.InvitationToken)
+            .IsUnique();
+
+        modelBuilder.Entity<UserInvitation>()
+            .HasIndex(ui => new { ui.Email, ui.CompanyId, ui.Status });
 
         // Configure Customer-Company relationship
         modelBuilder.Entity<Customer>()
@@ -710,7 +750,7 @@ public class CrmDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         // Note: Opportunity relationship configured above in Opportunity section
-        
+
         modelBuilder.Entity<Contract>()
             .HasOne(c => c.Invoice)
             .WithMany(i => i.Contracts)

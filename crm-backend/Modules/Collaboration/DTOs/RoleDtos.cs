@@ -1,5 +1,3 @@
-using crm_backend.Modules.Collaboration;
-
 namespace crm_backend.Modules.Collaboration.DTOs;
 
 public class RoleDto

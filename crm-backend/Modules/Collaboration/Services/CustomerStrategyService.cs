@@ -1,6 +1,5 @@
 using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,8 +31,8 @@ public class CustomerStrategyService : ICustomerStrategyService
                 Priority = cs.Priority.ToString(),
                 StartDate = cs.StartDate,
                 EndDate = cs.EndDate,
-                SuccessMetrics = !string.IsNullOrEmpty(cs.SuccessMetrics) 
-                    ? JsonSerializer.Deserialize<Dictionary<string, object>>(cs.SuccessMetrics) 
+                SuccessMetrics = !string.IsNullOrEmpty(cs.SuccessMetrics)
+                    ? JsonSerializer.Deserialize<Dictionary<string, object>>(cs.SuccessMetrics)
                     : null,
                 CustomerId = cs.CustomerId,
                 CustomerName = cs.Customer.Name,
@@ -69,8 +68,8 @@ public class CustomerStrategyService : ICustomerStrategyService
                 Priority = cs.Priority.ToString(),
                 StartDate = cs.StartDate,
                 EndDate = cs.EndDate,
-                SuccessMetrics = !string.IsNullOrEmpty(cs.SuccessMetrics) 
-                    ? JsonSerializer.Deserialize<Dictionary<string, object>>(cs.SuccessMetrics) 
+                SuccessMetrics = !string.IsNullOrEmpty(cs.SuccessMetrics)
+                    ? JsonSerializer.Deserialize<Dictionary<string, object>>(cs.SuccessMetrics)
                     : null,
                 CustomerId = cs.CustomerId,
                 CustomerName = cs.Customer.Name,
@@ -112,8 +111,8 @@ public class CustomerStrategyService : ICustomerStrategyService
             Priority = strategy.Priority.ToString(),
             StartDate = strategy.StartDate,
             EndDate = strategy.EndDate,
-            SuccessMetrics = !string.IsNullOrEmpty(strategy.SuccessMetrics) 
-                ? JsonSerializer.Deserialize<Dictionary<string, object>>(strategy.SuccessMetrics) 
+            SuccessMetrics = !string.IsNullOrEmpty(strategy.SuccessMetrics)
+                ? JsonSerializer.Deserialize<Dictionary<string, object>>(strategy.SuccessMetrics)
                 : null,
             CustomerId = strategy.CustomerId,
             CustomerName = strategy.Customer.Name,
@@ -193,7 +192,7 @@ public class CustomerStrategyService : ICustomerStrategyService
         _context.CustomerStrategies.Add(strategy);
         await _context.SaveChangesAsync();
 
-        return await GetStrategyByIdAsync(strategy.Id) 
+        return await GetStrategyByIdAsync(strategy.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created strategy");
     }
 

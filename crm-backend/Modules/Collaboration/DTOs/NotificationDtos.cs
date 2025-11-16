@@ -1,5 +1,3 @@
-using HotChocolate;
-
 namespace crm_backend.Modules.Collaboration.DTOs;
 
 public class NotificationDto
@@ -16,10 +14,10 @@ public class NotificationDto
     public bool IsRead { get; set; }
     public DateTime? ReadAt { get; set; }
     public string Priority { get; set; } = string.Empty;
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Metadata { get; set; }
-    
+
     public int CompanyId { get; set; }
     public DateTime CreatedAt { get; set; }
 }
@@ -34,7 +32,7 @@ public class CreateNotificationDto
     public int? EntityId { get; set; }
     public string? ActionUrl { get; set; }
     public string Priority { get; set; } = "Medium";
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Metadata { get; set; }
 }

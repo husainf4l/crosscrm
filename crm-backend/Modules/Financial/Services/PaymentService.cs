@@ -161,7 +161,7 @@ public class PaymentService : IPaymentService
         var invoice = await _context.Invoices
             .Include(i => i.Customer)
             .FirstOrDefaultAsync(i => i.Id == dto.InvoiceId);
-        
+
         if (invoice == null)
         {
             throw new InvalidOperationException($"Invoice with ID {dto.InvoiceId} does not exist.");
@@ -211,11 +211,11 @@ public class PaymentService : IPaymentService
         };
 
         _context.Payments.Add(payment);
-        
+
         // Update invoice paid amount and status
         invoice.PaidAmount += dto.Amount;
         invoice.UpdatedAt = DateTime.UtcNow;
-        
+
         // Auto-update invoice status based on payment
         if (invoice.PaidAmount >= invoice.TotalAmount)
         {
@@ -226,9 +226,9 @@ public class PaymentService : IPaymentService
         {
             invoice.Status = InvoiceStatus.PartiallyPaid;
         }
-        
+
         await _context.SaveChangesAsync();
-        
+
         // Update invoice status (triggers any additional workflow)
         var invoiceService = new InvoiceService(_context);
         await invoiceService.UpdateInvoiceStatusAsync(invoice.Id);
@@ -256,7 +256,7 @@ public class PaymentService : IPaymentService
         {
             var opportunity = await _context.Opportunities
                 .FirstOrDefaultAsync(o => o.Id == invoice.OpportunityId.Value);
-            
+
             if (opportunity != null)
             {
                 await _activityTimelineService.LogActivityAsync(new Collaboration.DTOs.CreateActivityTimelineDto

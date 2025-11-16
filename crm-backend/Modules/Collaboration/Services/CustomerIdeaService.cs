@@ -1,5 +1,4 @@
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,7 +38,7 @@ public class CustomerIdeaService : ICustomerIdeaService
                 CreatedAt = ci.CreatedAt,
                 UpdatedAt = ci.UpdatedAt,
                 CommentCount = _context.NoteComments.Count(nc => nc.EntityType == "Idea" && nc.EntityId == ci.Id),
-                UserVote = userId.HasValue 
+                UserVote = userId.HasValue
                     ? _context.IdeaVotes
                         .Where(iv => iv.IdeaId == ci.Id && iv.UserId == userId.Value)
                         .Select(iv => (bool?)iv.IsUpvote)
@@ -76,7 +75,7 @@ public class CustomerIdeaService : ICustomerIdeaService
                 CreatedAt = ci.CreatedAt,
                 UpdatedAt = ci.UpdatedAt,
                 CommentCount = _context.NoteComments.Count(nc => nc.EntityType == "Idea" && nc.EntityId == ci.Id),
-                UserVote = userId.HasValue 
+                UserVote = userId.HasValue
                     ? _context.IdeaVotes
                         .Where(iv => iv.IdeaId == ci.Id && iv.UserId == userId.Value)
                         .Select(iv => (bool?)iv.IsUpvote)
@@ -181,7 +180,7 @@ public class CustomerIdeaService : ICustomerIdeaService
         _context.CustomerIdeas.Add(idea);
         await _context.SaveChangesAsync();
 
-        return await GetIdeaByIdAsync(idea.Id) 
+        return await GetIdeaByIdAsync(idea.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created idea");
     }
 
@@ -278,7 +277,7 @@ public class CustomerIdeaService : ICustomerIdeaService
 
         await _context.SaveChangesAsync();
 
-        return await GetIdeaByIdAsync(idea.Id, userId) 
+        return await GetIdeaByIdAsync(idea.Id, userId)
             ?? throw new InvalidOperationException("Failed to retrieve idea");
     }
 

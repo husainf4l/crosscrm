@@ -1,5 +1,5 @@
-using crm_backend.Modules.Opportunity.DTOs;
 using crm_backend.Modules.Financial.DTOs;
+using crm_backend.Modules.Opportunity.DTOs;
 
 namespace crm_backend.Modules.Opportunity.Services;
 

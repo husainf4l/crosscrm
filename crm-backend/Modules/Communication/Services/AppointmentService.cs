@@ -111,7 +111,7 @@ public class AppointmentService : IAppointmentService
     public async Task<AppointmentDto> CreateAppointmentAsync(CreateAppointmentDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -304,7 +304,7 @@ public class AppointmentService : IAppointmentService
         if (dto.Status.HasValue)
         {
             appointment.Status = dto.Status.Value;
-            
+
             if (dto.Status.Value == AppointmentStatus.Completed && appointment.CompletedAt == null)
             {
                 appointment.CompletedAt = DateTime.UtcNow;
@@ -385,8 +385,8 @@ public class AppointmentService : IAppointmentService
             .Include(a => a.Contact)
             .Include(a => a.Opportunity)
             .Include(a => a.CreatedByUser)
-            .Where(a => a.CompanyId == companyId 
-                && a.StartTime >= startDate 
+            .Where(a => a.CompanyId == companyId
+                && a.StartTime >= startDate
                 && a.StartTime <= endDate
                 && a.Status != AppointmentStatus.Cancelled)
             .OrderBy(a => a.StartTime)

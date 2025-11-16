@@ -92,7 +92,7 @@ public class QuoteWorkflowService : IQuoteWorkflowService
             Description = $"Quote status changed from {oldStatus} to {newStatus}"
         }, companyId, userId);
 
-        return await _quoteService.GetQuoteByIdAsync(quoteId) 
+        return await _quoteService.GetQuoteByIdAsync(quoteId)
             ?? throw new InvalidOperationException("Failed to retrieve updated quote");
     }
 

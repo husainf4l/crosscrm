@@ -1,5 +1,3 @@
-using crm_backend.Modules.Marketing;
-
 namespace crm_backend.Modules.Marketing.DTOs;
 
 public class CampaignDto

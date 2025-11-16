@@ -1,13 +1,10 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Collaboration.DTOs;
-using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Collaboration.DTOs;
+using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm_backend.Modules.Collaboration;
 
@@ -24,7 +21,7 @@ public class RoleResolver : BaseResolver
         [Service] CrmDbContext context)
     {
         var companyId = await GetActiveCompanyIdOrNullAsync(httpContextAccessor, context);
-        
+
         return await roleService.GetAllRolesAsync(companyId);
     }
 

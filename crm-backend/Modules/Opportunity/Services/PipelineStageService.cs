@@ -176,7 +176,7 @@ public class PipelineStageService : IPipelineStageService
         // Check if any opportunities are using this stage
         var hasOpportunities = await _context.Opportunities
             .AnyAsync(o => o.PipelineStageId == id);
-        
+
         if (hasOpportunities)
         {
             throw new InvalidOperationException("Cannot delete pipeline stage that has associated opportunities.");

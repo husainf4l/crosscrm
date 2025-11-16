@@ -1,5 +1,3 @@
-using crm_backend.Modules.Collaboration;
-
 namespace crm_backend.Modules.Collaboration.DTOs;
 
 public class TeamDto
@@ -27,6 +25,7 @@ public class ManagerBasicDto
     public string Email { get; set; } = string.Empty;
 }
 
+[GraphQLName("CreateTeamInput")]
 public class CreateTeamDto
 {
     public string Name { get; set; } = string.Empty;
@@ -37,6 +36,7 @@ public class CreateTeamDto
     public List<int>? MemberUserIds { get; set; } // Optional initial members
 }
 
+[GraphQLName("UpdateTeamInput")]
 public class UpdateTeamDto
 {
     public string? Name { get; set; }
@@ -44,6 +44,10 @@ public class UpdateTeamDto
     public TeamType? Type { get; set; }
     public bool? IsActive { get; set; }
     public int? ManagerUserId { get; set; }
+
+    // Note: CompanyId is included for API compatibility but will be ignored in updates
+    // Teams cannot change their company after creation
+    public int? CompanyId { get; set; }
 }
 
 public class TeamMemberDto
@@ -60,6 +64,7 @@ public class TeamMemberDto
     public DateTime? LeftAt { get; set; }
 }
 
+[GraphQLName("AddTeamMemberInput")]
 public class AddTeamMemberDto
 {
     public int TeamId { get; set; }
@@ -67,6 +72,7 @@ public class AddTeamMemberDto
     public TeamMemberRole Role { get; set; } = TeamMemberRole.Member;
 }
 
+[GraphQLName("UpdateTeamMemberInput")]
 public class UpdateTeamMemberDto
 {
     public TeamMemberRole? Role { get; set; }

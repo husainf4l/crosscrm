@@ -1,7 +1,5 @@
-using HotChocolate;
 using System.Security.Claims;
 using crm_backend.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.GraphQL;

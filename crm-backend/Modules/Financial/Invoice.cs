@@ -8,7 +8,7 @@ public class Invoice
     public string InvoiceNumber { get; set; } = string.Empty; // Auto-generated: "INV-2025-001"
     public string? Title { get; set; }
     public string? Description { get; set; }
-    
+
     // Financial
     public decimal SubTotal { get; set; }
     public decimal? TaxAmount { get; set; }
@@ -17,39 +17,39 @@ public class Invoice
     public decimal PaidAmount { get; set; } = 0;
     public decimal BalanceAmount => TotalAmount - PaidAmount;
     public string Currency { get; set; } = "USD";
-    
+
     // Dates
     public DateTime InvoiceDate { get; set; } = DateTime.UtcNow;
     public DateTime DueDate { get; set; }
     public DateTime? PaidAt { get; set; }
-    
+
     // Status
     public InvoiceStatus Status { get; set; } = InvoiceStatus.Draft;
-    
+
     // Relationships
     public int CustomerId { get; set; }
     public Customer.Customer Customer { get; set; } = null!;
-    
+
     public int? QuoteId { get; set; } // Converted from quote
     public Quote? Quote { get; set; }
-    
+
     public int? OpportunityId { get; set; }
     public Opportunity.Opportunity? Opportunity { get; set; }
-    
+
     public int? AssignedToTeamId { get; set; }
     public Collaboration.Team? AssignedTeam { get; set; }
-    
+
     public int CreatedByUserId { get; set; }
     public User.User CreatedByUser { get; set; } = null!;
-    
+
     // Multi-tenant
     public int CompanyId { get; set; }
     public Company.Company Company { get; set; } = null!;
-    
+
     // Timestamps
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
-    
+
     // Financial Integration Fields
     // Note: Invoices are primarily synced from external financial systems (QuickBooks, Odoo, SAP)
     // The CRM displays invoice data but does not manage the full financial lifecycle
@@ -60,7 +60,7 @@ public class Invoice
     public string? SyncError { get; set; } // Last sync error message
     public int? FinancialIntegrationId { get; set; } // Link to integration configuration
     public FinancialIntegration? FinancialIntegration { get; set; }
-    
+
     // Navigation
     public ICollection<InvoiceLineItem> LineItems { get; set; } = new List<InvoiceLineItem>();
     public ICollection<Payment> Payments { get; set; } = new List<Payment>();

@@ -1,5 +1,4 @@
 using System.Text.Json;
-using HotChocolate;
 
 namespace crm_backend.Modules.Collaboration.DTOs;
 
@@ -15,14 +14,14 @@ public class ActivityTimelineDto
     public string? PerformedByUserName { get; set; }
     public int? AIAgentId { get; set; }
     public string? AIAgentName { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Metadata { get; set; }
-    
-    public string? MetadataJson => Metadata != null 
-        ? JsonSerializer.Serialize(Metadata) 
+
+    public string? MetadataJson => Metadata != null
+        ? JsonSerializer.Serialize(Metadata)
         : null;
-    
+
     public int CompanyId { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsRead { get; set; } // For user-specific feeds
@@ -36,18 +35,18 @@ public class CreateActivityTimelineDto
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public int? AIAgentId { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Metadata { get; set; }
-    
+
     public string? MetadataJson
     {
         get => Metadata != null ? JsonSerializer.Serialize(Metadata) : null;
-        set => Metadata = !string.IsNullOrEmpty(value) 
-            ? JsonSerializer.Deserialize<Dictionary<string, object>>(value) 
+        set => Metadata = !string.IsNullOrEmpty(value)
+            ? JsonSerializer.Deserialize<Dictionary<string, object>>(value)
             : null;
     }
-    
+
     public List<int>? NotifyUserIds { get; set; } // Optional: users to notify about this activity
 }
 

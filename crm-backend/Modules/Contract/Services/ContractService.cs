@@ -119,7 +119,7 @@ public class ContractService : IContractService
     public async Task<ContractDto> CreateContractAsync(CreateContractDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -310,7 +310,7 @@ public class ContractService : IContractService
         if (dto.Status.HasValue)
         {
             contract.Status = dto.Status.Value;
-            
+
             if (dto.Status.Value == ContractStatus.Signed && contract.SignedAt == null)
             {
                 contract.SignedAt = DateTime.UtcNow;
@@ -402,8 +402,8 @@ public class ContractService : IContractService
         var duration = contract.EndDate - contract.StartDate;
         var newStartDate = contract.EndDate.AddDays(1);
         var newEndDate = newStartDate.Add(duration);
-        var newRenewalDate = contract.RenewalDate.HasValue 
-            ? contract.RenewalDate.Value.Add(duration) 
+        var newRenewalDate = contract.RenewalDate.HasValue
+            ? contract.RenewalDate.Value.Add(duration)
             : (DateTime?)null;
 
         // Create new contract
@@ -491,8 +491,8 @@ public class ContractService : IContractService
             .Include(c => c.Customer)
             .Include(c => c.Opportunity)
             .Include(c => c.CreatedByUser)
-            .Where(c => c.CompanyId == companyId 
-                && c.EndDate >= DateTime.UtcNow.Date 
+            .Where(c => c.CompanyId == companyId
+                && c.EndDate >= DateTime.UtcNow.Date
                 && c.EndDate <= endDate
                 && (c.Status == ContractStatus.Active || c.Status == ContractStatus.Signed))
             .OrderBy(c => c.EndDate)
@@ -532,7 +532,7 @@ public class ContractService : IContractService
             .Include(c => c.Customer)
             .Include(c => c.Opportunity)
             .Include(c => c.CreatedByUser)
-            .Where(c => c.CompanyId == companyId 
+            .Where(c => c.CompanyId == companyId
                 && c.EndDate < DateTime.UtcNow.Date
                 && c.Status != ContractStatus.Expired
                 && c.Status != ContractStatus.Cancelled

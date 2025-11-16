@@ -1,6 +1,5 @@
 using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -96,7 +95,7 @@ public class NotificationService : INotificationService
     {
         var notification = await _context.Notifications
             .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId && n.CompanyId == companyId);
-        
+
         if (notification == null) return false;
 
         if (!notification.IsRead)
@@ -116,7 +115,7 @@ public class NotificationService : INotificationService
             .ToListAsync();
 
         var count = unreadNotifications.Count;
-        
+
         foreach (var notification in unreadNotifications)
         {
             notification.IsRead = true;
@@ -147,7 +146,7 @@ public class NotificationService : INotificationService
     {
         var notification = await _context.Notifications
             .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId && n.CompanyId == companyId);
-        
+
         if (notification == null) return false;
 
         _context.Notifications.Remove(notification);
@@ -200,9 +199,9 @@ public class NotificationService : INotificationService
 
         // Check if preference already exists
         var existing = await _context.NotificationPreferences
-            .FirstOrDefaultAsync(np => np.UserId == userId 
-                && np.NotificationType == notificationType 
-                && np.Channel == channel 
+            .FirstOrDefaultAsync(np => np.UserId == userId
+                && np.NotificationType == notificationType
+                && np.Channel == channel
                 && np.CompanyId == companyId);
 
         if (existing != null)
@@ -258,7 +257,7 @@ public class NotificationService : INotificationService
         var preference = await _context.NotificationPreferences
             .Include(np => np.User)
             .FirstOrDefaultAsync(np => np.Id == id && np.UserId == userId && np.CompanyId == companyId);
-        
+
         if (preference == null) return null;
 
         if (dto.IsEnabled.HasValue)
@@ -287,7 +286,7 @@ public class NotificationService : INotificationService
     {
         var preference = await _context.NotificationPreferences
             .FirstOrDefaultAsync(np => np.Id == id && np.UserId == userId && np.CompanyId == companyId);
-        
+
         if (preference == null) return false;
 
         _context.NotificationPreferences.Remove(preference);

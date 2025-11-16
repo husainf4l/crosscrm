@@ -1,5 +1,4 @@
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -105,7 +104,7 @@ public class NoteCommentService : INoteCommentService
         _context.NoteComments.Add(comment);
         await _context.SaveChangesAsync();
 
-        return await GetCommentByIdAsync(comment.Id) 
+        return await GetCommentByIdAsync(comment.Id)
             ?? throw new InvalidOperationException("Failed to retrieve created comment");
     }
 

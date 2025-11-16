@@ -1,14 +1,11 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Customer.DTOs;
-using crm_backend.Modules.Customer.Services;
+using System.Security.Claims;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Customer.DTOs;
+using crm_backend.Modules.Customer.Services;
 using crm_backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using FluentValidation;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm_backend.Modules.Customer;
 
@@ -26,7 +23,7 @@ public class CustomerResolver : BaseResolver
         [Service] CrmDbContext context)
     {
         var companyId = await GetActiveCompanyIdOrNullAsync(httpContextAccessor, context);
-        
+
         if (!companyId.HasValue)
         {
             return new CustomerConnectionDto
@@ -44,9 +41,9 @@ public class CustomerResolver : BaseResolver
         }
 
         return await customerService.GetCustomersConnectionAsync(
-            companyId.Value, 
-            first, 
-            after, 
+            companyId.Value,
+            first,
+            after,
             search,
             filters);
     }

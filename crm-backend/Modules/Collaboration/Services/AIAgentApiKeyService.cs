@@ -1,9 +1,6 @@
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
-using BCrypt.Net;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -196,7 +193,7 @@ public class AIAgentApiKeyService : IAIAgentApiKeyService
                 // Update last used
                 key.LastUsedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
-                
+
                 return key;
             }
         }
@@ -217,7 +214,7 @@ public class AIAgentApiKeyService : IAIAgentApiKeyService
             var oneMinuteAgo = now.AddMinutes(-1);
             var recentRequests = await _context.AIAgentApiKeyUsageLogs
                 .CountAsync(log => log.ApiKeyId == apiKeyId && log.CreatedAt >= oneMinuteAgo);
-            
+
             if (recentRequests >= apiKey.RateLimitPerMinute.Value)
                 return false;
         }
@@ -228,7 +225,7 @@ public class AIAgentApiKeyService : IAIAgentApiKeyService
             var oneHourAgo = now.AddHours(-1);
             var recentRequests = await _context.AIAgentApiKeyUsageLogs
                 .CountAsync(log => log.ApiKeyId == apiKeyId && log.CreatedAt >= oneHourAgo);
-            
+
             if (recentRequests >= apiKey.RateLimitPerHour.Value)
                 return false;
         }

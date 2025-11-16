@@ -1,5 +1,3 @@
-using crm_backend.Modules.Communication;
-
 namespace crm_backend.Modules.Communication.DTOs;
 
 public class TaskDto

@@ -1,5 +1,3 @@
-using crm_backend.Modules.Contract;
-
 namespace crm_backend.Modules.Contract.DTOs;
 
 public class ContractDto

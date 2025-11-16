@@ -1,5 +1,4 @@
 using System.Text.Json;
-using HotChocolate;
 
 namespace crm_backend.Modules.Collaboration.DTOs;
 
@@ -51,12 +50,12 @@ public class ChannelMemberDto
     public string Role { get; set; } = string.Empty;
     public DateTime JoinedAt { get; set; }
     public DateTime? LastReadAt { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? NotificationSettings { get; set; }
-    
-    public string? NotificationSettingsJson => NotificationSettings != null 
-        ? JsonSerializer.Serialize(NotificationSettings) 
+
+    public string? NotificationSettingsJson => NotificationSettings != null
+        ? JsonSerializer.Serialize(NotificationSettings)
         : null;
 }
 
@@ -83,14 +82,14 @@ public class MessageDto
     public bool IsDeleted { get; set; }
     public DateTime? EditedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, List<int>>? Reactions { get; set; }
-    
-    public string? ReactionsJson => Reactions != null 
-        ? JsonSerializer.Serialize(Reactions) 
+
+    public string? ReactionsJson => Reactions != null
+        ? JsonSerializer.Serialize(Reactions)
         : null;
-    
+
     public int CompanyId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }

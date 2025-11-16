@@ -15,14 +15,14 @@ public class Contact
     public string? Phone { get; set; }
     public string? Mobile { get; set; }
     public bool IsPrimary { get; set; } = false; // Primary contact person
-    
+
     // Contact Role in the Account
     public ContactRole Role { get; set; } = ContactRole.Other;
 
     // Relationship with Account (B2B - primary relationship)
     public int? AccountId { get; set; }
     public Account? Account { get; set; }
-    
+
     // Relationship with Customer (for backward compatibility)
     public int? CustomerId { get; set; }
     public Customer? Customer { get; set; }

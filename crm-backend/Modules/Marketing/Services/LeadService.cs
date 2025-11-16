@@ -125,7 +125,7 @@ public class LeadService : ILeadService
     public async Task<LeadDto> CreateLeadAsync(CreateLeadDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)

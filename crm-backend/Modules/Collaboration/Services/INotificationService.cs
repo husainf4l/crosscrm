@@ -11,13 +11,13 @@ public interface INotificationService
     Task<int> MarkAllNotificationsAsReadAsync(int userId, int companyId);
     Task<NotificationCountDto> GetNotificationCountAsync(int userId, int companyId);
     Task<bool> DeleteNotificationAsync(int id, int userId, int companyId);
-    
+
     // Notification Preferences
     Task<IEnumerable<NotificationPreferenceDto>> GetNotificationPreferencesAsync(int userId, int companyId);
     Task<NotificationPreferenceDto> CreateNotificationPreferenceAsync(CreateNotificationPreferenceDto dto, int userId, int companyId);
     Task<NotificationPreferenceDto?> UpdateNotificationPreferenceAsync(int id, UpdateNotificationPreferenceDto dto, int userId, int companyId);
     Task<bool> DeleteNotificationPreferenceAsync(int id, int userId, int companyId);
-    
+
     // Helper methods for creating notifications from events
     Task NotifyUserMentionedAsync(int userId, int mentionedByUserId, int messageId, int companyId);
     Task NotifyNewMessageAsync(int userId, int channelId, int messageId, int companyId);

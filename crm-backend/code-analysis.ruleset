@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="CRM Backend Rules" Description="Code analysis rules for CRM Backend" ToolsVersion="16.0">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
+    <!-- Code Style Rules -->
+    <Rule Id="IDE0001" Action="Warning" /> <!-- Simplify name -->
+    <Rule Id="IDE0002" Action="Warning" /> <!-- Simplify member access -->
+    <Rule Id="IDE0003" Action="Warning" /> <!-- Remove this or Me qualification -->
+    <Rule Id="IDE0004" Action="Warning" /> <!-- Remove unnecessary cast -->
+    <Rule Id="IDE0005" Action="Warning" /> <!-- Remove unnecessary import -->
+    <Rule Id="IDE0007" Action="Info" /> <!-- Use var instead of explicit type -->
+    <Rule Id="IDE0008" Action="Info" /> <!-- Use explicit type instead of var -->
+  </Rules>
+  
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.NetAnalyzers" RuleNamespace="Microsoft.CodeAnalysis.NetAnalyzers">
+    <!-- Design Rules -->
+    <Rule Id="CA1000" Action="Warning" /> <!-- Do not declare static members on generic types -->
+    <Rule Id="CA1001" Action="Error" /> <!-- Types that own disposable fields should be disposable -->
+    <Rule Id="CA1002" Action="Warning" /> <!-- Do not expose generic lists -->
+    <Rule Id="CA1003" Action="Warning" /> <!-- Use generic event handler instances -->
+    <Rule Id="CA1005" Action="Warning" /> <!-- Avoid excessive parameters on generic types -->
+    
+    <!-- Globalization Rules -->
+    <Rule Id="CA1303" Action="None" /> <!-- Do not pass literals as localized parameters -->
+    <Rule Id="CA1304" Action="Error" /> <!-- Specify CultureInfo -->
+    <Rule Id="CA1305" Action="Error" /> <!-- Specify IFormatProvider -->
+    <Rule Id="CA1307" Action="Error" /> <!-- Specify StringComparison -->
+    
+    <!-- Performance Rules -->
+    <Rule Id="CA1822" Action="Warning" /> <!-- Mark members as static -->
+    <Rule Id="CA1823" Action="Error" /> <!-- Avoid unused private fields -->
+    <Rule Id="CA1825" Action="Error" /> <!-- Avoid zero-length array allocations -->
+    <Rule Id="CA1826" Action="Error" /> <!-- Use property instead of Linq method -->
+    
+    <!-- Security Rules -->
+    <Rule Id="CA2007" Action="None" /> <!-- Do not directly await a Task (not needed in ASP.NET Core) -->
+    <Rule Id="CA3001" Action="Error" /> <!-- Review code for SQL injection vulnerabilities -->
+    <Rule Id="CA3002" Action="Error" /> <!-- Review code for XSS vulnerabilities -->
+    <Rule Id="CA3003" Action="Error" /> <!-- Review code for file path injection vulnerabilities -->
+    <Rule Id="CA3004" Action="Error" /> <!-- Review code for information disclosure vulnerabilities -->
+  </Rules>
+  
+  <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
+    <!-- Bugs -->
+    <Rule Id="S1854" Action="Error" /> <!-- Unused assignments should be removed -->
+    <Rule Id="S1481" Action="Error" /> <!-- Unused local variables should be removed -->
+    <Rule Id="S1144" Action="Error" /> <!-- Unused private types or members should be removed -->
+    
+    <!-- Code Smells -->
+    <Rule Id="S1118" Action="Warning" /> <!-- Utility classes should not have public constructors -->
+    <Rule Id="S1123" Action="Warning" /> <!-- Obsolete attributes should include explanations -->
+    <Rule Id="S1135" Action="Info" /> <!-- Track uses of "TODO" tags -->
+    
+    <!-- Vulnerabilities -->
+    <Rule Id="S2068" Action="Error" /> <!-- Credentials should not be hard-coded -->
+    <Rule Id="S4790" Action="Error" /> <!-- Hashing data is security-sensitive -->
+    <Rule Id="S5042" Action="Error" /> <!-- Expanding archive files is security-sensitive -->
+  </Rules>
+</RuleSet>

@@ -1,6 +1,4 @@
-using System.Text.Json;
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -98,7 +96,7 @@ public class CustomerWorkspaceService : ICustomerWorkspaceService
         _context.CustomerWorkspaces.Add(workspace);
         await _context.SaveChangesAsync();
 
-        return await GetWorkspaceByCustomerIdAsync(workspace.CustomerId, companyId) 
+        return await GetWorkspaceByCustomerIdAsync(workspace.CustomerId, companyId)
             ?? throw new InvalidOperationException("Failed to retrieve created workspace");
     }
 

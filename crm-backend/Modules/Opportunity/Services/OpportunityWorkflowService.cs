@@ -1,6 +1,5 @@
 using crm_backend.Data;
 using crm_backend.Modules.Collaboration.Services;
-using crm_backend.Modules.Financial;
 using crm_backend.Modules.Financial.DTOs;
 using crm_backend.Modules.Financial.Services;
 using crm_backend.Modules.Opportunity.DTOs;
@@ -117,7 +116,7 @@ public class OpportunityWorkflowService : IOpportunityWorkflowService
         // Send notifications
         var notificationTitle = newStatus == OpportunityStatus.Won ? "Opportunity Won!" : "Opportunity Status Changed";
         var notificationMessage = $"Opportunity '{opportunity.Name}' status changed to {newStatus}";
-        
+
         if (opportunity.AssignedUserId.HasValue)
         {
             await _notificationService.CreateNotificationAsync(new Collaboration.DTOs.CreateNotificationDto
@@ -170,7 +169,7 @@ public class OpportunityWorkflowService : IOpportunityWorkflowService
     {
         var opportunity = await _context.Opportunities
             .FirstOrDefaultAsync(o => o.Id == opportunityId && o.CompanyId == companyId);
-        
+
         if (opportunity == null)
             throw new InvalidOperationException("Opportunity not found");
 

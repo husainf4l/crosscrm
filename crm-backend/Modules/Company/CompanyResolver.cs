@@ -1,11 +1,8 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Company.DTOs;
-using crm_backend.Modules.Company.Services;
 using System.Security.Claims;
 using crm_backend.Data;
+using crm_backend.Modules.Company.DTOs;
+using crm_backend.Modules.Company.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.Modules.Company;

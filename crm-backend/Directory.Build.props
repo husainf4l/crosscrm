@@ -1,0 +1,15 @@
+<Project>
+  <!-- Global properties for all projects -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <!-- Basic code analysis -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>6.0</AnalysisLevel>
+    <_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
+  </PropertyGroup>
+
+  <!-- Essential analyzer for unused code detection -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
+  </ItemGroup>
+</Project>

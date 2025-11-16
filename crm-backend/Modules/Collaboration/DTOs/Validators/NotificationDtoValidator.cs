@@ -1,6 +1,4 @@
 using FluentValidation;
-using crm_backend.Modules.Collaboration;
-using crm_backend.Modules.Collaboration.DTOs;
 
 namespace crm_backend.Modules.Collaboration.DTOs.Validators;
 

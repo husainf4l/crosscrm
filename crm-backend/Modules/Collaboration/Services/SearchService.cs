@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 using crm_backend.Data;
 using crm_backend.Modules.Collaboration.DTOs;
-using crm_backend.Modules.Customer;
 using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.Modules.Collaboration.Services;
@@ -41,7 +40,7 @@ public class SearchService : ISearchService
                 .Where(tm => tm.TeamId == query.TeamId.Value && tm.Team.CompanyId == companyId)
                 .Select(tm => tm.UserId)
                 .ToListAsync();
-            
+
             if (!teamUserIds.Any())
             {
                 // No team members, return empty results
@@ -137,8 +136,8 @@ public class SearchService : ISearchService
 
         // Customer name suggestions
         var customers = await _context.Customers
-            .Where(c => c.CompanyId == companyId && 
-                       (c.Name.ToLower().Contains(searchTerm) || 
+            .Where(c => c.CompanyId == companyId &&
+                       (c.Name.ToLower().Contains(searchTerm) ||
                         (c.Email != null && c.Email.ToLower().Contains(searchTerm)) ||
                         (c.Phone != null && c.Phone.Contains(searchTerm))))
             .Take(5)
@@ -155,7 +154,7 @@ public class SearchService : ISearchService
 
         // User name suggestions
         var users = await _context.Users
-            .Where(u => u.Name.ToLower().Contains(searchTerm) || 
+            .Where(u => u.Name.ToLower().Contains(searchTerm) ||
                        u.Email.ToLower().Contains(searchTerm))
             .Take(3)
             .Select(u => new SearchSuggestionDto
@@ -171,7 +170,7 @@ public class SearchService : ISearchService
 
         // Channel name suggestions
         var channels = await _context.Channels
-            .Where(ch => ch.CompanyId == companyId && 
+            .Where(ch => ch.CompanyId == companyId &&
                         ch.Name.ToLower().Contains(searchTerm))
             .Take(3)
             .Select(ch => new SearchSuggestionDto
@@ -205,13 +204,13 @@ public class SearchService : ISearchService
 
         // Apply search terms
         var filteredCustomers = await customers.ToListAsync();
-        
+
         var results = new List<SearchResultDto>();
         foreach (var customer in filteredCustomers)
         {
             var searchableText = $"{customer.Name} {customer.Email} {customer.Phone} {customer.Address}".ToLower();
             var matches = searchTerms.Count(term => searchableText.Contains(term));
-            
+
             if (matches > 0)
             {
                 var relevanceScore = (double)matches / searchTerms.Length;

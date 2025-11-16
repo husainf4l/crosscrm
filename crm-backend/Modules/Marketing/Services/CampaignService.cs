@@ -91,7 +91,7 @@ public class CampaignService : ICampaignService
     public async Task<CampaignDto> CreateCampaignAsync(CreateCampaignDto dto)
     {
         var companyId = dto.CompanyId ?? throw new InvalidOperationException("Company ID is required");
-        
+
         // Verify company exists
         var companyExists = await _context.Companies.AnyAsync(c => c.Id == companyId);
         if (!companyExists)
@@ -299,7 +299,7 @@ public class CampaignService : ICampaignService
 
         // Check if member already exists
         var existingMember = await _context.CampaignMembers
-            .FirstOrDefaultAsync(cm => cm.CampaignId == dto.CampaignId 
+            .FirstOrDefaultAsync(cm => cm.CampaignId == dto.CampaignId
                 && (cm.LeadId == dto.LeadId || cm.CustomerId == dto.CustomerId || cm.ContactId == dto.ContactId)
                 && (dto.LeadId.HasValue && cm.LeadId == dto.LeadId
                     || dto.CustomerId.HasValue && cm.CustomerId == dto.CustomerId
@@ -413,7 +413,7 @@ public class CampaignService : ICampaignService
         // Calculate actual revenue from converted leads
         var convertedMembers = await _context.CampaignMembers
             .Include(cm => cm.Lead)
-            .Where(cm => cm.CampaignId == campaignId 
+            .Where(cm => cm.CampaignId == campaignId
                 && cm.Status == CampaignMemberStatus.Converted
                 && cm.LeadId.HasValue
                 && cm.Lead != null

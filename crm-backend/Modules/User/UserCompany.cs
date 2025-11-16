@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace crm_backend.Modules.User;
 
 public class UserCompany

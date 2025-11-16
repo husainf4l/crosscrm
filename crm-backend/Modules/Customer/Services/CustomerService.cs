@@ -1,7 +1,7 @@
+using System.Text;
 using crm_backend.Data;
 using crm_backend.Modules.Customer.DTOs;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 
 namespace crm_backend.Modules.Customer.Services;
 
@@ -54,8 +54,8 @@ public class CustomerService : ICustomerService
     }
 
     public async Task<CustomerConnectionDto> GetCustomersConnectionAsync(
-        int companyId, 
-        int? first = null, 
+        int companyId,
+        int? first = null,
         string? after = null,
         string? search = null,
         CustomerFiltersDto? filters = null)
@@ -68,7 +68,7 @@ public class CustomerService : ICustomerService
         if (!string.IsNullOrEmpty(search))
         {
             var searchLower = search.ToLower();
-            query = query.Where(c => 
+            query = query.Where(c =>
                 c.Name.ToLower().Contains(searchLower) ||
                 (c.Email != null && c.Email.ToLower().Contains(searchLower)) ||
                 (c.Phone != null && c.Phone.ToLower().Contains(searchLower)) ||
@@ -85,31 +85,31 @@ public class CustomerService : ICustomerService
         {
             if (!string.IsNullOrEmpty(filters.Name))
                 query = query.Where(c => c.Name.ToLower().Contains(filters.Name.ToLower()));
-            
+
             if (!string.IsNullOrEmpty(filters.Email))
                 query = query.Where(c => c.Email != null && c.Email.ToLower().Contains(filters.Email.ToLower()));
-            
+
             if (!string.IsNullOrEmpty(filters.Status))
                 query = query.Where(c => c.Status == filters.Status);
-            
+
             if (!string.IsNullOrEmpty(filters.City))
                 query = query.Where(c => c.City != null && c.City.ToLower().Contains(filters.City.ToLower()));
-            
+
             if (!string.IsNullOrEmpty(filters.Country))
                 query = query.Where(c => c.Country != null && c.Country.ToLower().Contains(filters.Country.ToLower()));
-            
+
             if (!string.IsNullOrEmpty(filters.CustomerType))
                 query = query.Where(c => c.CustomerType == filters.CustomerType);
-            
+
             if (!string.IsNullOrEmpty(filters.Industry))
                 query = query.Where(c => c.Industry != null && c.Industry.ToLower().Contains(filters.Industry.ToLower()));
-            
+
             if (!string.IsNullOrEmpty(filters.Priority))
                 query = query.Where(c => c.Priority == filters.Priority);
-            
+
             if (filters.CreatedFrom.HasValue)
                 query = query.Where(c => c.CreatedAt >= filters.CreatedFrom.Value);
-            
+
             if (filters.CreatedTo.HasValue)
                 query = query.Where(c => c.CreatedAt <= filters.CreatedTo.Value);
         }
@@ -126,7 +126,7 @@ public class CustomerService : ICustomerService
 
         // Default first to 10, max 100
         var take = Math.Min(first ?? 10, 100);
-        
+
         // Order by Id for consistent pagination
         var customers = await query
             .OrderBy(c => c.Id)

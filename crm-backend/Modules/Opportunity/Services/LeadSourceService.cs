@@ -135,7 +135,7 @@ public class LeadSourceService : ILeadSourceService
         // Check if any opportunities are using this source
         var hasOpportunities = await _context.Opportunities
             .AnyAsync(o => o.SourceId == id);
-        
+
         if (hasOpportunities)
         {
             throw new InvalidOperationException("Cannot delete lead source that has associated opportunities.");

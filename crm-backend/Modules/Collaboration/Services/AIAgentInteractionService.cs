@@ -1,5 +1,4 @@
 using crm_backend.Data;
-using crm_backend.Modules.Collaboration;
 using crm_backend.Modules.Collaboration.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -144,8 +143,8 @@ public class AIAgentInteractionService : IAIAgentInteractionService
         var interactions = await _context.AIAgentInteractions
             .Include(ai => ai.Agent)
             .Include(ai => ai.User)
-            .Where(ai => ai.EntityType == entityType 
-                && ai.EntityId == entityId 
+            .Where(ai => ai.EntityType == entityType
+                && ai.EntityId == entityId
                 && ai.CompanyId == companyId)
             .OrderByDescending(ai => ai.CreatedAt)
             .Select(ai => new AIAgentInteractionDto

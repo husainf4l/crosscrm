@@ -1,13 +1,10 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Marketing.DTOs;
-using crm_backend.Modules.Marketing.Services;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Marketing.DTOs;
+using crm_backend.Modules.Marketing.Services;
 using crm_backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm_backend.Modules.Marketing;
 
@@ -24,7 +21,7 @@ public class CampaignResolver : BaseResolver
         [Service] CrmDbContext context)
     {
         var companyId = await GetActiveCompanyIdOrNullAsync(httpContextAccessor, context);
-        
+
         if (!companyId.HasValue)
         {
             return new List<CampaignDto>();

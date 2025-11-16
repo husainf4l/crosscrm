@@ -1,13 +1,10 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.Collaboration.DTOs;
-using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Data;
 using crm_backend.GraphQL;
+using crm_backend.Modules.Collaboration.DTOs;
+using crm_backend.Modules.Collaboration.Services;
 using crm_backend.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 
 namespace crm_backend.Modules.Collaboration;
 
@@ -15,22 +12,26 @@ namespace crm_backend.Modules.Collaboration;
 public class TeamResolver : BaseResolver
 {
     [Authorize]
-    [UseProjection]
-    [UseFiltering]
-    [UseSorting]
     public async Task<IEnumerable<TeamDto>> GetTeams(
         [Service] ITeamService teamService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context)
     {
-        var companyId = await GetActiveCompanyIdOrNullAsync(httpContextAccessor, context);
-        
-        if (!companyId.HasValue)
+        try
         {
-            return new List<TeamDto>();
-        }
+            var companyId = await GetActiveCompanyIdOrNullAsync(httpContextAccessor, context);
 
-        return await teamService.GetAllTeamsAsync(companyId.Value);
+            if (!companyId.HasValue)
+            {
+                return new List<TeamDto>();
+            }
+
+            return await teamService.GetAllTeamsAsync(companyId.Value);
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException($"Failed to load teams: {ex.Message}");
+        }
     }
 
     [Authorize]
@@ -40,15 +41,22 @@ public class TeamResolver : BaseResolver
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context)
     {
-        var companyId = await GetActiveCompanyIdAsync(httpContextAccessor, context);
-        var team = await teamService.GetTeamByIdAsync(id);
-
-        if (team == null || team.CompanyId != companyId)
+        try
         {
-            return null;
-        }
+            var companyId = await GetActiveCompanyIdAsync(httpContextAccessor, context);
+            var team = await teamService.GetTeamByIdAsync(id);
 
-        return team;
+            if (team == null || team.CompanyId != companyId)
+            {
+                return null;
+            }
+
+            return team;
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException($"Failed to load team: {ex.Message}");
+        }
     }
 
     [Authorize]
@@ -57,10 +65,17 @@ public class TeamResolver : BaseResolver
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context)
     {
-        var companyId = await GetActiveCompanyIdAsync(httpContextAccessor, context);
-        var userId = GetUserId(httpContextAccessor.HttpContext);
-        
-        return await teamService.GetTeamsByUserAsync(userId, companyId);
+        try
+        {
+            var companyId = await GetActiveCompanyIdAsync(httpContextAccessor, context);
+            var userId = GetUserId(httpContextAccessor.HttpContext);
+
+            return await teamService.GetTeamsByUserAsync(userId, companyId);
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException($"Failed to load user teams: {ex.Message}");
+        }
     }
 
     [Authorize]
@@ -253,6 +268,38 @@ public class TeamMutation : BaseResolver
 
     [Authorize]
     public async Task<bool> RemoveTeamMember(
+        int teamId,
+        int userId,
+        [Service] ITeamService teamService,
+        [Service] IHttpContextAccessor httpContextAccessor,
+        [Service] CrmDbContext context,
+        [Service] IErrorHandlingService errorHandling)
+    {
+        try
+        {
+            var companyId = await GetActiveCompanyIdAsync(httpContextAccessor, context);
+
+            // Verify team belongs to company
+            var team = await teamService.GetTeamByIdAsync(teamId);
+            if (team == null || team.CompanyId != companyId)
+            {
+                throw new GraphQLException("Team not found or access denied");
+            }
+
+            return await teamService.RemoveTeamMemberAsync(teamId, userId);
+        }
+        catch (GraphQLException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw errorHandling.HandleException(ex, "Failed to remove team member");
+        }
+    }
+
+    [Authorize]
+    public async Task<bool> RemoveTeamMemberByMemberId(
         int memberId,
         [Service] ITeamService teamService,
         [Service] IErrorHandlingService errorHandling)

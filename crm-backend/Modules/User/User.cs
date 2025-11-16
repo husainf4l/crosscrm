@@ -25,6 +25,8 @@ public class User
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public DateTime? LastLoginAt { get; set; }
+
     // Sales Hierarchy
     public int? ManagerId { get; set; }
     public User? Manager { get; set; }

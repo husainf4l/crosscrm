@@ -1,29 +1,60 @@
-using HotChocolate;
-using HotChocolate.Data;
-using crm_backend.Modules.User.DTOs;
-using crm_backend.Modules.User.Services;
 using System.Security.Claims;
 using crm_backend.Data;
-using Microsoft.EntityFrameworkCore;
+using crm_backend.GraphQL;
+using crm_backend.Modules.User.DTOs;
+using crm_backend.Modules.User.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace crm_backend.Modules.User;
 
 [ExtendObjectType(typeof(crm_backend.GraphQL.Query))]
-public class UserResolver
+public class UserResolver : BaseResolver
 {
+    [Authorize]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public async Task<IEnumerable<UserDto>> GetUsers([Service] IUserService userService)
+    public async Task<IEnumerable<UserDto>> GetUsers(
+        [Service] IUserService userService,
+        [Service] IHttpContextAccessor httpContextAccessor,
+        [Service] CrmDbContext context)
     {
-        return await userService.GetAllUsersAsync();
+        try
+        {
+            var companyId = await GetActiveCompanyIdAsync(httpContextAccessor, context);
+            return await userService.GetUsersByCompanyAsync(companyId);
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException($"Failed to load users: {ex.Message}");
+        }
     }
 
-    public async Task<UserDto?> GetUser(int id, [Service] IUserService userService)
+    [Authorize]
+    public async Task<UserDto?> GetUser(
+        int id,
+        [Service] IUserService userService,
+        [Service] IHttpContextAccessor httpContextAccessor,
+        [Service] CrmDbContext context)
     {
-        return await userService.GetUserByIdAsync(id);
+        try
+        {
+            var companyId = await GetActiveCompanyIdAsync(httpContextAccessor, context);
+            var user = await userService.GetUserByIdAsync(id);
+
+            // Check if the user belongs to the same company
+            if (user == null || user.CompanyId != companyId)
+            {
+                return null; // Don't expose users from other companies
+            }
+
+            return user;
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException($"Failed to load user: {ex.Message}");
+        }
     }
 
     [Authorize]
@@ -256,7 +287,7 @@ public class UserMutation
         try
         {
             var avatarPath = "/Users/husain/Desktop/cross/crm-backend/6596121.webp";
-            
+
             if (!File.Exists(avatarPath))
             {
                 throw new GraphQLException("Avatar file not found");
@@ -264,12 +295,12 @@ public class UserMutation
 
             var fileBytes = await File.ReadAllBytesAsync(avatarPath);
             var s3Key = await s3Service.UploadFileAsync("default-avatar.webp", fileBytes, "image/webp");
-            
+
             // Generate the public URL
             var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME") ?? "4wk-garage-media";
             var region = Environment.GetEnvironmentVariable("AWS_REGION") ?? "me-central-1";
             var publicUrl = $"https://{bucketName}.s3.{region}.amazonaws.com/{s3Key}";
-            
+
             return publicUrl;
         }
         catch (Exception ex)

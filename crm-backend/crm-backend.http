@@ -4,3 +4,52 @@ GET {{crm_backend_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# Register a new user for testing
+POST {{crm_backend_HostAddress}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation RegisterUser($input: RegisterDto!) { register(input: $input) { id email firstName lastName company { id name } } }",
+  "variables": {
+    "input": {
+      "email": "test@example.com",
+      "password": "Test123!",
+      "firstName": "Test",
+      "lastName": "User",
+      "companyName": "Test Company"
+    }
+  }
+}
+
+###
+
+# Login to get JWT token
+POST {{crm_backend_HostAddress}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation LoginUser($input: LoginDto!) { login(input: $input) { token refreshToken user { id email firstName lastName } } }",
+  "variables": {
+    "input": {
+      "email": "test@example.com",
+      "password": "Test123!"
+    }
+  }
+}
+
+###
+
+# Test email sending (replace YOUR_JWT_TOKEN with actual token from login)
+POST {{crm_backend_HostAddress}}/graphql
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN
+
+{
+  "query": "mutation SendTestEmail($toEmail: String!) { sendTestEmail(toEmail: $toEmail) }",
+  "variables": {
+    "toEmail": "al-hussein@margogroup.net"
+  }
+}
+
+###

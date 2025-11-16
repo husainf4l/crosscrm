@@ -12,50 +12,50 @@ public class Account
     public string? Website { get; set; }
     public decimal? AnnualRevenue { get; set; }
     public int? EmployeeCount { get; set; }
-    
+
     // Addresses
     public string? BillingAddress { get; set; }
     public string? BillingCity { get; set; }
     public string? BillingState { get; set; }
     public string? BillingPostalCode { get; set; }
     public string? BillingCountry { get; set; }
-    
+
     public string? ShippingAddress { get; set; }
     public string? ShippingCity { get; set; }
     public string? ShippingState { get; set; }
     public string? ShippingPostalCode { get; set; }
     public string? ShippingCountry { get; set; }
-    
+
     // Account Type
     public AccountType Type { get; set; } = AccountType.Customer;
-    
+
     // Account Hierarchy
     public int? ParentAccountId { get; set; }
     public Account? ParentAccount { get; set; }
     public ICollection<Account> ChildAccounts { get; set; } = new List<Account>();
-    
+
     // Assignment
     public int? AssignedToUserId { get; set; }
     public User.User? AssignedToUser { get; set; }
-    
+
     public int? AssignedToTeamId { get; set; }
     public Collaboration.Team? AssignedTeam { get; set; }
-    
+
     // TODO: Implement Territory module
     // public int? TerritoryId { get; set; }
     // public Territory.Territory? Territory { get; set; }
-    
+
     // Multi-tenant
     public int CompanyId { get; set; }
     public Company.Company Company { get; set; } = null!;
-    
+
     // Timestamps
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
-    
+
     // Status
     public string Status { get; set; } = "Active"; // Active, Inactive, Prospect
-    
+
     // Navigation
     public ICollection<Contact> Contacts { get; set; } = new List<Contact>();
     public ICollection<Customer> Customers { get; set; } = new List<Customer>();

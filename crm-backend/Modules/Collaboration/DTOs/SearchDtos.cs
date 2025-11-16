@@ -1,5 +1,3 @@
-using HotChocolate;
-
 namespace crm_backend.Modules.Collaboration.DTOs;
 
 public class SearchResultDto
@@ -10,10 +8,10 @@ public class SearchResultDto
     public string? Description { get; set; }
     public string? HighlightedText { get; set; } // Text with search terms highlighted
     public string? ActionUrl { get; set; } // URL to navigate to the entity
-    
+
     [GraphQLIgnore]
     public Dictionary<string, object>? Metadata { get; set; } // Additional entity-specific data
-    
+
     public DateTime? CreatedAt { get; set; }
     public int? CreatedByUserId { get; set; }
     public string? CreatedByUserName { get; set; }
@@ -36,10 +34,10 @@ public class SearchResponseDto
 {
     public List<SearchResultDto> Results { get; set; } = new();
     public int TotalCount { get; set; }
-    
+
     [GraphQLIgnore]
     public Dictionary<string, int> CountByEntityType { get; set; } = new(); // Count per entity type
-    
+
     public List<string> Suggestions { get; set; } = new(); // Search suggestions
 }
 

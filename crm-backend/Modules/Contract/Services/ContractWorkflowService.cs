@@ -87,7 +87,7 @@ public class ContractWorkflowService : IContractWorkflowService
             Description = $"Contract status changed from {oldStatus} to {newStatus}"
         }, companyId, userId);
 
-        return await _contractService.GetContractByIdAsync(contractId) 
+        return await _contractService.GetContractByIdAsync(contractId)
             ?? throw new InvalidOperationException("Failed to retrieve updated contract");
     }
 
@@ -124,7 +124,7 @@ public class ContractWorkflowService : IContractWorkflowService
             Description = $"Contract linked to Invoice {invoice.InvoiceNumber}"
         }, companyId, userId);
 
-        return await _contractService.GetContractByIdAsync(contractId) 
+        return await _contractService.GetContractByIdAsync(contractId)
             ?? throw new InvalidOperationException("Failed to retrieve updated contract");
     }
 }
