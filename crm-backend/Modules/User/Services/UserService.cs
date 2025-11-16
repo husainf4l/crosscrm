@@ -57,6 +57,9 @@ public class UserService : IUserService
             .Include(uc => uc.User)
                 .ThenInclude(u => u.DirectReports)
             .Include(uc => uc.User)
+                .ThenInclude(u => u.TeamMemberships)
+                    .ThenInclude(tm => tm.Team)
+            .Include(uc => uc.User)
                 .ThenInclude(u => u.UserRoles)
                     .ThenInclude(ur => ur.Role)
             .Where(uc => uc.CompanyId == companyId && uc.IsActive)
@@ -90,6 +93,16 @@ public class UserService : IUserService
                 Name = dr.Name,
                 Email = dr.Email,
                 Avatar = dr.Avatar
+            }).ToList(),
+            Teams = uc.User.TeamMemberships.Where(tm => tm.IsActive).Select(tm => new TeamMembershipDto
+            {
+                Id = tm.Id,
+                TeamId = tm.TeamId,
+                TeamName = tm.Team?.Name ?? "Unknown Team",
+                Name = uc.User.Name,
+                Role = tm.Role.ToString(),
+                IsActive = tm.IsActive,
+                JoinedAt = tm.JoinedAt
             }).ToList(),
             Roles = uc.User.UserRoles.Select(ur => new UserRoleAssignmentDto
             {
