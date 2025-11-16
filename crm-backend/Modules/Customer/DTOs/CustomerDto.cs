@@ -16,6 +16,13 @@ public class CustomerDto
     public string CompanyName { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    
+    // Additional Business Fields
+    public string? ContactPersonName { get; set; }
+    public string? CustomerType { get; set; }
+    public string? Industry { get; set; }
+    public string? Website { get; set; }
+    public string? Priority { get; set; }
 
     // Category information
     public List<CustomerCategoryDto> Categories { get; set; } = new List<CustomerCategoryDto>();

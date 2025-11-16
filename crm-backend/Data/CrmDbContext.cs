@@ -16,6 +16,7 @@ public class CrmDbContext : DbContext
     public CrmDbContext(DbContextOptions<CrmDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<crm_backend.Modules.User.UserCompany> UserCompanies { get; set; }
     public DbSet<Customer> Customers { get; set; }
@@ -294,6 +295,12 @@ public class CrmDbContext : DbContext
             .HasOne(q => q.AssignedTeam)
             .WithMany()
             .HasForeignKey(q => q.AssignedToTeamId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Quote>()
+            .HasOne(q => q.ConvertedToInvoice)
+            .WithMany()
+            .HasForeignKey(q => q.ConvertedToInvoiceId)
             .OnDelete(DeleteBehavior.SetNull);
 
         // Configure QuoteLineItem relationships

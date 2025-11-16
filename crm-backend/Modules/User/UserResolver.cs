@@ -63,6 +63,7 @@ public class UserResolver
             Name = user.Name,
             Email = user.Email,
             Phone = user.Phone,
+            Avatar = user.Avatar,
             CreatedAt = user.CreatedAt,
             CompanyId = user.CompanyId,
             CompanyName = user.Company?.Name,
@@ -246,6 +247,64 @@ public class UserMutation
         catch (Exception ex)
         {
             throw new GraphQLException($"Failed to set active company: {ex.Message}");
+        }
+    }
+
+    // Temporary mutation to upload default avatar
+    public async Task<string> UploadDefaultAvatar([Service] crm_backend.Modules.Customer.Services.IS3Service s3Service)
+    {
+        try
+        {
+            var avatarPath = "/Users/husain/Desktop/cross/crm-backend/6596121.webp";
+            
+            if (!File.Exists(avatarPath))
+            {
+                throw new GraphQLException("Avatar file not found");
+            }
+
+            var fileBytes = await File.ReadAllBytesAsync(avatarPath);
+            var s3Key = await s3Service.UploadFileAsync("default-avatar.webp", fileBytes, "image/webp");
+            
+            // Generate the public URL
+            var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME") ?? "4wk-garage-media";
+            var region = Environment.GetEnvironmentVariable("AWS_REGION") ?? "me-central-1";
+            var publicUrl = $"https://{bucketName}.s3.{region}.amazonaws.com/{s3Key}";
+            
+            return publicUrl;
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException($"Failed to upload default avatar: {ex.Message}");
+        }
+    }
+
+    [Authorize]
+    public async Task<bool> SignOut(
+        [Service] IHttpContextAccessor httpContextAccessor,
+        [Service] IAuthService authService)
+    {
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext == null || httpContext.User == null)
+        {
+            throw new GraphQLException("User not authenticated");
+        }
+
+        var claimsPrincipal = httpContext.User;
+        var userIdClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            ?? claimsPrincipal.FindFirst("sub")?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+        {
+            throw new GraphQLException("Invalid user token");
+        }
+
+        try
+        {
+            return await authService.SignOutAsync(userId);
+        }
+        catch (Exception ex)
+        {
+            throw new GraphQLException($"Failed to sign out: {ex.Message}");
         }
     }
 }

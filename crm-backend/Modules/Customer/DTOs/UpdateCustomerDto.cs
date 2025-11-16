@@ -11,4 +11,11 @@ public class UpdateCustomerDto
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     public string? Status { get; set; }
+    
+    // Additional Business Fields
+    public string? ContactPersonName { get; set; }
+    public string? CustomerType { get; set; }
+    public string? Industry { get; set; }
+    public string? Website { get; set; }
+    public string? Priority { get; set; }
 }

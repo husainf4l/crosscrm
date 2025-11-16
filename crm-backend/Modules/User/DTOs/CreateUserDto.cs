@@ -14,5 +14,8 @@ public class CreateUserDto
     [Phone]
     public string? Phone { get; set; }
 
+    [StringLength(500)]
+    public string? Avatar { get; set; }
+
     public int? CompanyId { get; set; }
 }

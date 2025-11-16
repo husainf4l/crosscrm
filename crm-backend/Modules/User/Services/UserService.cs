@@ -25,6 +25,7 @@ public class UserService : IUserService
                 Name = u.Name,
                 Email = u.Email,
                 Phone = u.Phone,
+                Avatar = u.Avatar,
                 CreatedAt = u.CreatedAt,
                 CompanyId = u.CompanyId,
                 CompanyName = u.Company != null ? u.Company.Name : null,
@@ -56,6 +57,7 @@ public class UserService : IUserService
             Name = user.Name,
             Email = user.Email,
             Phone = user.Phone,
+            Avatar = user.Avatar,
             CreatedAt = user.CreatedAt,
             CompanyId = user.CompanyId,
             CompanyName = user.Company?.Name ?? string.Empty,
@@ -82,7 +84,8 @@ public class UserService : IUserService
         {
             Name = dto.Name,
             Email = dto.Email,
-            Phone = dto.Phone
+            Phone = dto.Phone,
+            Avatar = dto.Avatar
         };
 
         _context.Users.Add(user);
@@ -112,6 +115,7 @@ public class UserService : IUserService
             Name = user.Name,
             Email = user.Email,
             Phone = user.Phone,
+            Avatar = user.Avatar,
             CreatedAt = user.CreatedAt,
             CompanyId = user.CompanyId,
             CompanyName = user.Company?.Name ?? string.Empty,
@@ -143,6 +147,7 @@ public class UserService : IUserService
         user.Name = dto.Name;
         user.Email = dto.Email;
         user.Phone = dto.Phone;
+        user.Avatar = dto.Avatar;
         user.CompanyId = dto.CompanyId;
 
         await _context.SaveChangesAsync();
@@ -157,6 +162,7 @@ public class UserService : IUserService
             Name = user.Name,
             Email = user.Email,
             Phone = user.Phone,
+            Avatar = user.Avatar,
             CreatedAt = user.CreatedAt,
             CompanyId = user.CompanyId,
             CompanyName = user.Company?.Name ?? string.Empty,

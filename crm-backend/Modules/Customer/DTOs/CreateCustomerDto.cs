@@ -11,4 +11,11 @@ public class CreateCustomerDto
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     public int? CompanyId { get; set; } // Made optional since it's set automatically from authenticated user
+    
+    // Additional Business Fields
+    public string? ContactPersonName { get; set; }
+    public string? CustomerType { get; set; } = "individual";
+    public string? Industry { get; set; }
+    public string? Website { get; set; }
+    public string? Priority { get; set; } = "medium";
 }

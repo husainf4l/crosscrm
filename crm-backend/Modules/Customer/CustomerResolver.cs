@@ -16,10 +16,11 @@ namespace crm_backend.Modules.Customer;
 public class CustomerResolver : BaseResolver
 {
     [Authorize]
-    [UseProjection]
-    [UseFiltering]
-    [UseSorting]
-    public async Task<IEnumerable<CustomerDto>> GetCustomers(
+    public async Task<CustomerConnectionDto> GetCustomers(
+        int? first,
+        string? after,
+        string? search,
+        CustomerFiltersDto? filters,
         [Service] ICustomerService customerService,
         [Service] IHttpContextAccessor httpContextAccessor,
         [Service] CrmDbContext context)
@@ -28,10 +29,26 @@ public class CustomerResolver : BaseResolver
         
         if (!companyId.HasValue)
         {
-            return new List<CustomerDto>();
+            return new CustomerConnectionDto
+            {
+                Edges = new List<CustomerEdgeDto>(),
+                PageInfo = new PageInfoDto
+                {
+                    HasNextPage = false,
+                    HasPreviousPage = false,
+                    StartCursor = null,
+                    EndCursor = null
+                },
+                TotalCount = 0
+            };
         }
 
-        return await customerService.GetAllCustomersAsync(companyId.Value);
+        return await customerService.GetCustomersConnectionAsync(
+            companyId.Value, 
+            first, 
+            after, 
+            search,
+            filters);
     }
 
     [Authorize]

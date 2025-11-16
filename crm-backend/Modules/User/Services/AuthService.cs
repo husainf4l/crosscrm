@@ -6,6 +6,7 @@ using crm_backend.Data;
 using crm_backend.Modules.User.DTOs;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
+using crm_backend.Modules.Customer.Services;
 
 namespace crm_backend.Modules.User.Services;
 
@@ -13,17 +14,20 @@ public interface IAuthService
 {
     Task<AuthResponseDto> RegisterAsync(RegisterDto dto);
     Task<AuthResponseDto?> LoginAsync(LoginDto dto);
+    Task<bool> SignOutAsync(int userId);
 }
 
 public class AuthService : IAuthService
 {
     private readonly CrmDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly IS3Service _s3Service;
 
-    public AuthService(CrmDbContext context, IConfiguration configuration)
+    public AuthService(CrmDbContext context, IConfiguration configuration, IS3Service s3Service)
     {
         _context = context;
         _configuration = configuration;
+        _s3Service = s3Service;
     }
 
     public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
@@ -38,11 +42,17 @@ public class AuthService : IAuthService
         // Hash password
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
+        // Generate default avatar if not provided
+        var defaultAvatar = string.IsNullOrEmpty(dto.Avatar) 
+            ? GenerateDefaultAvatar(dto.Name, dto.Email)
+            : dto.Avatar;
+
         var user = new User
         {
             Name = dto.Name,
             Email = dto.Email,
             Phone = dto.Phone,
+            Avatar = defaultAvatar,
             PasswordHash = passwordHash
         };
 
@@ -61,20 +71,38 @@ public class AuthService : IAuthService
             _context.UserCompanies.Add(userCompany);
             user.CompanyId = dto.CompanyId.Value;
             await _context.SaveChangesAsync();
+
+            // Reload user with company information for JWT generation
+            user = await _context.Users
+                .Include(u => u.Company)
+                .FirstOrDefaultAsync(u => u.Id == user.Id) ?? user;
         }
 
-        // Generate token
+        // Generate access token and refresh token
         var token = GenerateJwtToken(user);
+        var refreshTokenString = Guid.NewGuid().ToString("N");
+        var refreshToken = new RefreshToken
+        {
+            Token = refreshTokenString,
+            UserId = user.Id,
+            ExpiresAt = DateTime.UtcNow.AddDays(30),
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.RefreshTokens.Add(refreshToken);
+        await _context.SaveChangesAsync();
 
         return new AuthResponseDto
         {
             Token = token,
+            RefreshToken = refreshTokenString,
+            ExpiresIn = (int)TimeSpan.FromHours(24).TotalSeconds,
             User = new UserDto
             {
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
                 Phone = user.Phone,
+                Avatar = user.Avatar,
                 CreatedAt = user.CreatedAt,
                 CompanyId = user.CompanyId
             }
@@ -100,16 +128,29 @@ public class AuthService : IAuthService
         }
 
         var token = GenerateJwtToken(user);
+        var refreshTokenString = Guid.NewGuid().ToString("N");
+        var refreshToken = new RefreshToken
+        {
+            Token = refreshTokenString,
+            UserId = user.Id,
+            ExpiresAt = DateTime.UtcNow.AddDays(30),
+            CreatedAt = DateTime.UtcNow
+        };
+        _context.RefreshTokens.Add(refreshToken);
+        await _context.SaveChangesAsync();
 
         return new AuthResponseDto
         {
             Token = token,
+            RefreshToken = refreshTokenString,
+            ExpiresIn = (int)TimeSpan.FromHours(24).TotalSeconds,
             User = new UserDto
             {
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
                 Phone = user.Phone,
+                Avatar = user.Avatar,
                 CreatedAt = user.CreatedAt,
                 CompanyId = user.CompanyId,
                 CompanyName = user.Company?.Name,
@@ -124,20 +165,40 @@ public class AuthService : IAuthService
         };
     }
 
+    public async Task<bool> SignOutAsync(int userId)
+    {
+        // Revoke all active refresh tokens for the user
+        var tokens = _context.RefreshTokens.Where(rt => rt.UserId == userId && rt.RevokedAt == null).ToList();
+        if (!tokens.Any()) return true;
+        foreach (var t in tokens)
+        {
+            t.RevokedAt = DateTime.UtcNow;
+        }
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
     private string GenerateJwtToken(User user)
     {
-        var jwtSettings = _configuration.GetSection("Jwt");
-        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "default-secret-key-for-development");
-        var issuer = jwtSettings["Issuer"] ?? "crm-backend";
-        var audience = jwtSettings["Audience"] ?? "crm-client";
+        var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY") ?? "default-secret-key-for-development");
+        var issuer = Environment.GetEnvironmentVariable("JWT_ISSUER") ?? "crm-backend";
+        var audience = Environment.GetEnvironmentVariable("JWT_AUDIENCE") ?? "crm-client";
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim("name", user.Name),
-            new Claim("companyId", user.CompanyId?.ToString() ?? "")
+            new Claim("companyId", user.CompanyId?.ToString() ?? ""),
+            new Claim("hasCompany", (user.CompanyId.HasValue && user.CompanyId.Value > 0).ToString().ToLower())
         };
+
+        // Add company-specific claims if user has an active company
+        if (user.CompanyId.HasValue && user.CompanyId.Value > 0 && user.Company != null)
+        {
+            claims.Add(new Claim("companyName", user.Company.Name));
+            claims.Add(new Claim("activeCompanyId", user.CompanyId.Value.ToString()));
+        }
 
         var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
 
@@ -150,5 +211,32 @@ public class AuthService : IAuthService
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    private string GenerateDefaultAvatar(string name, string email)
+    {
+        // Option 1: Use uploaded default avatar from S3
+        var bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME") ?? "4wk-garage-media";
+        var region = Environment.GetEnvironmentVariable("AWS_REGION") ?? "me-central-1";
+        var defaultAvatarUrl = $"https://{bucketName}.s3.{region}.amazonaws.com/crm-assets/default-avatar.webp";
+        
+        return defaultAvatarUrl;
+        
+        // Option 2: Fallback to Dicebear API for personalized avatars
+        // var seed = email.ToLower().Trim();
+        // return $"https://api.dicebear.com/7.x/initials/svg?seed={Uri.EscapeDataString(seed)}&backgroundColor=random";
+    }
+
+    private string GetInitials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "U";
+        
+        var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length == 1)
+        {
+            return words[0].Substring(0, Math.Min(2, words[0].Length)).ToUpper();
+        }
+        
+        return (words[0].Substring(0, 1) + words[words.Length - 1].Substring(0, 1)).ToUpper();
     }
 }

@@ -14,6 +14,9 @@ public class UpdateUserDto
     [Phone]
     public string? Phone { get; set; }
 
+    [StringLength(500)]
+    public string? Avatar { get; set; }
+
     [Required]
     public int CompanyId { get; set; }
 }

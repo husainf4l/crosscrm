@@ -17,6 +17,9 @@ public class User
     [Phone]
     public string? Phone { get; set; }
 
+    [StringLength(500)]
+    public string? Avatar { get; set; }
+
     [Required]
     public string PasswordHash { get; set; } = string.Empty;
 

@@ -1662,6 +1662,9 @@ namespace crm_backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("AutoRenew")
                         .HasColumnType("boolean");
 
@@ -1721,6 +1724,8 @@ namespace crm_backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId");
+
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("CreatedByUserId");
@@ -1770,6 +1775,106 @@ namespace crm_backend.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ContractLineItems");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Customer.Account", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("AnnualRevenue")
+                        .HasColumnType("numeric");
+
+                    b.Property<int?>("AssignedTeamId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedToTeamId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedToUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("BillingAddress")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BillingCity")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BillingCountry")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BillingPostalCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BillingState")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("EmployeeCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Industry")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ParentAccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ShippingAddress")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShippingCity")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShippingCountry")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShippingPostalCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShippingState")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("TerritoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedTeamId");
+
+                    b.HasIndex("AssignedToUserId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("ParentAccountId");
+
+                    b.HasIndex("TerritoryId");
+
+                    b.ToTable("Account");
                 });
 
             modelBuilder.Entity("crm_backend.Modules.Customer.ActivityLog", b =>
@@ -1837,27 +1942,40 @@ namespace crm_backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Mobile")
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Phone")
                         .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");
@@ -1866,6 +1984,10 @@ namespace crm_backend.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("CustomerId");
 
@@ -1880,6 +2002,9 @@ namespace crm_backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
@@ -1892,6 +2017,9 @@ namespace crm_backend.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ContactPersonName")
+                        .HasColumnType("text");
+
                     b.Property<int?>("ConvertedFromLeadId")
                         .HasColumnType("integer");
 
@@ -1901,7 +2029,13 @@ namespace crm_backend.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CustomerType")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Industry")
                         .HasColumnType("text");
 
                     b.Property<double?>("Latitude")
@@ -1917,20 +2051,33 @@ namespace crm_backend.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("text");
 
+                    b.Property<string>("Priority")
+                        .HasColumnType("text");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("TerritoryId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Website")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("AssignedToTeamId");
 
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("ConvertedFromLeadId");
+
+                    b.HasIndex("TerritoryId");
 
                     b.ToTable("Customers");
                 });
@@ -2181,6 +2328,9 @@ namespace crm_backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("AssignedUserId")
                         .HasColumnType("integer");
 
@@ -2217,6 +2367,8 @@ namespace crm_backend.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("AssignedUserId");
 
@@ -2546,6 +2698,9 @@ namespace crm_backend.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ConvertedToInvoiceId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -2605,6 +2760,8 @@ namespace crm_backend.Migrations
 
                     b.HasIndex("CompanyId");
 
+                    b.HasIndex("ConvertedToInvoiceId");
+
                     b.HasIndex("CreatedByUserId");
 
                     b.HasIndex("CustomerId");
@@ -2632,6 +2789,9 @@ namespace crm_backend.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("PriceBookEntryId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("integer");
 
@@ -2645,6 +2805,8 @@ namespace crm_backend.Migrations
                         .HasColumnType("numeric");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PriceBookEntryId");
 
                     b.HasIndex("ProductId");
 
@@ -2957,6 +3119,9 @@ namespace crm_backend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("ActualCloseDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -3013,6 +3178,9 @@ namespace crm_backend.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("TerritoryId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -3023,6 +3191,8 @@ namespace crm_backend.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("AssignedToTeamId");
 
@@ -3037,6 +3207,8 @@ namespace crm_backend.Migrations
                     b.HasIndex("PipelineStageId");
 
                     b.HasIndex("SourceId");
+
+                    b.HasIndex("TerritoryId");
 
                     b.ToTable("Opportunities");
                 });
@@ -3113,6 +3285,112 @@ namespace crm_backend.Migrations
                     b.ToTable("PipelineStages");
                 });
 
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.PriceBook", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ValidFrom")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("PriceBook");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.PriceBookEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DiscountRules")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("DiscountType")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("DiscountValue")
+                        .HasColumnType("numeric");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("MaxQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MinQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PriceBookId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ValidFrom")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ValidTo")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PriceBookId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("PriceBookEntry");
+                });
+
             modelBuilder.Entity("crm_backend.Modules.Opportunity.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -3120,6 +3398,12 @@ namespace crm_backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Barcode")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("integer");
@@ -3137,11 +3421,26 @@ namespace crm_backend.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<int?>("FamilyId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Height")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrls")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsTaxable")
                         .HasColumnType("boolean");
+
+                    b.Property<decimal?>("Length")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -3162,11 +3461,181 @@ namespace crm_backend.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("VariantAttributes")
+                        .HasColumnType("text");
+
+                    b.Property<decimal?>("Weight")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Width")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("FamilyId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.ProductCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Products");
+                    b.HasIndex("ParentCategoryId");
+
+                    b.ToTable("ProductCategory");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.ProductFamily", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("ProductFamily");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.Territory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AssignedTeamId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedToTeamId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("AssignedToUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Region")
+                        .HasColumnType("text");
+
+                    b.Property<string>("State")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedTeamId");
+
+                    b.HasIndex("AssignedToUserId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Territory");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.User.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("crm_backend.Modules.User.User", b =>
@@ -3176,6 +3645,10 @@ namespace crm_backend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int?>("CompanyId")
                         .HasColumnType("integer");
@@ -4102,6 +4575,11 @@ namespace crm_backend.Migrations
 
             modelBuilder.Entity("crm_backend.Modules.Contract.Contract", b =>
                 {
+                    b.HasOne("crm_backend.Modules.Customer.Account", "Account")
+                        .WithMany("Contracts")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("crm_backend.Modules.Company.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
@@ -4129,6 +4607,8 @@ namespace crm_backend.Migrations
                         .WithMany("Contracts")
                         .HasForeignKey("OpportunityId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Account");
 
                     b.Navigation("Company");
 
@@ -4160,6 +4640,39 @@ namespace crm_backend.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("crm_backend.Modules.Customer.Account", b =>
+                {
+                    b.HasOne("crm_backend.Modules.Collaboration.Team", "AssignedTeam")
+                        .WithMany()
+                        .HasForeignKey("AssignedTeamId");
+
+                    b.HasOne("crm_backend.Modules.User.User", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId");
+
+                    b.HasOne("crm_backend.Modules.Company.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("crm_backend.Modules.Customer.Account", "ParentAccount")
+                        .WithMany("ChildAccounts")
+                        .HasForeignKey("ParentAccountId");
+
+                    b.HasOne("crm_backend.Modules.Opportunity.Territory", null)
+                        .WithMany("Accounts")
+                        .HasForeignKey("TerritoryId");
+
+                    b.Navigation("AssignedTeam");
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("ParentAccount");
+                });
+
             modelBuilder.Entity("crm_backend.Modules.Customer.ActivityLog", b =>
                 {
                     b.HasOne("crm_backend.Modules.Customer.Customer", "Customer")
@@ -4185,17 +4698,33 @@ namespace crm_backend.Migrations
 
             modelBuilder.Entity("crm_backend.Modules.Customer.Contact", b =>
                 {
-                    b.HasOne("crm_backend.Modules.Customer.Customer", "Customer")
+                    b.HasOne("crm_backend.Modules.Customer.Account", "Account")
                         .WithMany("Contacts")
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("crm_backend.Modules.Company.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("crm_backend.Modules.Customer.Customer", "Customer")
+                        .WithMany("Contacts")
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Company");
 
                     b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("crm_backend.Modules.Customer.Customer", b =>
                 {
+                    b.HasOne("crm_backend.Modules.Customer.Account", "Account")
+                        .WithMany("Customers")
+                        .HasForeignKey("AccountId");
+
                     b.HasOne("crm_backend.Modules.Collaboration.Team", "AssignedTeam")
                         .WithMany()
                         .HasForeignKey("AssignedToTeamId")
@@ -4212,11 +4741,19 @@ namespace crm_backend.Migrations
                         .HasForeignKey("ConvertedFromLeadId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("crm_backend.Modules.Opportunity.Territory", "Territory")
+                        .WithMany("Customers")
+                        .HasForeignKey("TerritoryId");
+
+                    b.Navigation("Account");
+
                     b.Navigation("AssignedTeam");
 
                     b.Navigation("Company");
 
                     b.Navigation("ConvertedFromLead");
+
+                    b.Navigation("Territory");
                 });
 
             modelBuilder.Entity("crm_backend.Modules.Customer.CustomerCategoryMapping", b =>
@@ -4327,6 +4864,10 @@ namespace crm_backend.Migrations
 
             modelBuilder.Entity("crm_backend.Modules.Customer.Ticket", b =>
                 {
+                    b.HasOne("crm_backend.Modules.Customer.Account", null)
+                        .WithMany("Tickets")
+                        .HasForeignKey("AccountId");
+
                     b.HasOne("crm_backend.Modules.User.User", "AssignedUser")
                         .WithMany()
                         .HasForeignKey("AssignedUserId");
@@ -4489,6 +5030,11 @@ namespace crm_backend.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("crm_backend.Modules.Financial.Invoice", "ConvertedToInvoice")
+                        .WithMany()
+                        .HasForeignKey("ConvertedToInvoiceId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("crm_backend.Modules.User.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedByUserId")
@@ -4510,6 +5056,8 @@ namespace crm_backend.Migrations
 
                     b.Navigation("Company");
 
+                    b.Navigation("ConvertedToInvoice");
+
                     b.Navigation("CreatedByUser");
 
                     b.Navigation("Customer");
@@ -4519,6 +5067,10 @@ namespace crm_backend.Migrations
 
             modelBuilder.Entity("crm_backend.Modules.Financial.QuoteLineItem", b =>
                 {
+                    b.HasOne("crm_backend.Modules.Opportunity.PriceBookEntry", "PriceBookEntry")
+                        .WithMany("QuoteLineItems")
+                        .HasForeignKey("PriceBookEntryId");
+
                     b.HasOne("crm_backend.Modules.Opportunity.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -4530,6 +5082,8 @@ namespace crm_backend.Migrations
                         .HasForeignKey("QuoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PriceBookEntry");
 
                     b.Navigation("Product");
 
@@ -4665,6 +5219,10 @@ namespace crm_backend.Migrations
 
             modelBuilder.Entity("crm_backend.Modules.Opportunity.Opportunity", b =>
                 {
+                    b.HasOne("crm_backend.Modules.Customer.Account", "Account")
+                        .WithMany("Opportunities")
+                        .HasForeignKey("AccountId");
+
                     b.HasOne("crm_backend.Modules.Collaboration.Team", "AssignedTeam")
                         .WithMany()
                         .HasForeignKey("AssignedToTeamId")
@@ -4703,6 +5261,12 @@ namespace crm_backend.Migrations
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("crm_backend.Modules.Opportunity.Territory", "Territory")
+                        .WithMany("Opportunities")
+                        .HasForeignKey("TerritoryId");
+
+                    b.Navigation("Account");
+
                     b.Navigation("AssignedTeam");
 
                     b.Navigation("AssignedUser");
@@ -4716,6 +5280,8 @@ namespace crm_backend.Migrations
                     b.Navigation("PipelineStage");
 
                     b.Navigation("Source");
+
+                    b.Navigation("Territory");
                 });
 
             modelBuilder.Entity("crm_backend.Modules.Opportunity.OpportunityProduct", b =>
@@ -4748,15 +5314,119 @@ namespace crm_backend.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.PriceBook", b =>
+                {
+                    b.HasOne("crm_backend.Modules.Company.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.PriceBookEntry", b =>
+                {
+                    b.HasOne("crm_backend.Modules.Opportunity.PriceBook", "PriceBook")
+                        .WithMany("Entries")
+                        .HasForeignKey("PriceBookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("crm_backend.Modules.Opportunity.Product", "Product")
+                        .WithMany("PriceBookEntries")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PriceBook");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("crm_backend.Modules.Opportunity.Product", b =>
                 {
+                    b.HasOne("crm_backend.Modules.Opportunity.ProductCategory", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId");
+
                     b.HasOne("crm_backend.Modules.Company.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("crm_backend.Modules.Opportunity.ProductFamily", "Family")
+                        .WithMany("Products")
+                        .HasForeignKey("FamilyId");
+
+                    b.Navigation("Category");
+
                     b.Navigation("Company");
+
+                    b.Navigation("Family");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.ProductCategory", b =>
+                {
+                    b.HasOne("crm_backend.Modules.Company.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("crm_backend.Modules.Opportunity.ProductCategory", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.ProductFamily", b =>
+                {
+                    b.HasOne("crm_backend.Modules.Company.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.Territory", b =>
+                {
+                    b.HasOne("crm_backend.Modules.Collaboration.Team", "AssignedTeam")
+                        .WithMany()
+                        .HasForeignKey("AssignedTeamId");
+
+                    b.HasOne("crm_backend.Modules.User.User", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId");
+
+                    b.HasOne("crm_backend.Modules.Company.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssignedTeam");
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.User.RefreshToken", b =>
+                {
+                    b.HasOne("crm_backend.Modules.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("crm_backend.Modules.User.User", b =>
@@ -4891,6 +5561,21 @@ namespace crm_backend.Migrations
                     b.Navigation("LineItems");
                 });
 
+            modelBuilder.Entity("crm_backend.Modules.Customer.Account", b =>
+                {
+                    b.Navigation("ChildAccounts");
+
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Contracts");
+
+                    b.Navigation("Customers");
+
+                    b.Navigation("Opportunities");
+
+                    b.Navigation("Tickets");
+                });
+
             modelBuilder.Entity("crm_backend.Modules.Customer.Customer", b =>
                 {
                     b.Navigation("ActivityLogs");
@@ -4978,9 +5663,42 @@ namespace crm_backend.Migrations
                     b.Navigation("Opportunities");
                 });
 
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.PriceBook", b =>
+                {
+                    b.Navigation("Entries");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.PriceBookEntry", b =>
+                {
+                    b.Navigation("QuoteLineItems");
+                });
+
             modelBuilder.Entity("crm_backend.Modules.Opportunity.Product", b =>
                 {
                     b.Navigation("OpportunityProducts");
+
+                    b.Navigation("PriceBookEntries");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.ProductCategory", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.ProductFamily", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("crm_backend.Modules.Opportunity.Territory", b =>
+                {
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Customers");
+
+                    b.Navigation("Opportunities");
                 });
 
             modelBuilder.Entity("crm_backend.Modules.User.User", b =>

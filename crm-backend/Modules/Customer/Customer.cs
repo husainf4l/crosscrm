@@ -14,6 +14,13 @@ public class Customer
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
     
+    // Additional Business Fields
+    public string? ContactPersonName { get; set; }
+    public string? CustomerType { get; set; } = "individual"; // "individual", "business", "enterprise"
+    public string? Industry { get; set; }
+    public string? Website { get; set; }
+    public string? Priority { get; set; } = "medium"; // "low", "medium", "high", "critical"
+    
     // Relationship with Company
     public int CompanyId { get; set; }
     public crm_backend.Modules.Company.Company? Company { get; set; }
