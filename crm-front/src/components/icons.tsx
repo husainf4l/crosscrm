@@ -212,3 +212,4 @@ export const getIcon = (name: string, className = '', size = 20) => {
   return IconComponent ? <IconComponent className={className} size={size} /> : null;
 };
 
+
